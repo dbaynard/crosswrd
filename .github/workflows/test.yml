@@ -1,0 +1,52 @@
+name: Build and test
+on: [pull_request]
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [15]
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js ${{ matrix.node-version }}.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          check-latest: true
+
+      - name: Cache ~/.pnpm-store
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-pnpm-store
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-${{ matrix.node-version }}-build-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.node-version }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-${{ matrix.node-version }}-build-
+            ${{ runner.os }}-
+
+      - uses: pnpm/action-setup@8e1abe543ff1fa17b5d36e08ed01b4a1e4c31eb4
+        with:
+          version: 5.17
+          run_install: |
+            - recursive: true
+              args: [--frozen-lockfile]
+
+      - name: Build 🔧
+        run: |
+          pnpm -C crosswrd-app run build
+
+      - name: Test 🌡
+        run: |
+          pnpm -C crosswrd-app run test
+
+      - name: Upload build artifact 🚀
+        uses: actions/upload-artifact@v2
+        with:
+          name: build
+          path: crosswrd-app/build
