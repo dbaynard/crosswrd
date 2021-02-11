@@ -1,0 +1,57 @@
+name: Build and Deploy
+on:
+  push:
+    branches:
+    - main
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: netlify
+    strategy:
+      matrix:
+        node-version: [15]
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js ${{ matrix.node-version }}.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          check-latest: true
+
+      - name: Cache ~/.pnpm-store
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-pnpm-store
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-${{ matrix.node-version }}-build-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.node-version }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-${{ matrix.node-version }}-build-
+            ${{ runner.os }}-
+
+      - uses: pnpm/action-setup@8e1abe543ff1fa17b5d36e08ed01b4a1e4c31eb4
+        with:
+          version: 5.17
+          run_install: |
+            - recursive: true
+              args: [--frozen-lockfile]
+
+      - name: Build 🔧
+        run: |
+          pnpm -C crosswrd-app run build
+
+      - name: Deploy to Netlify 🚀
+        id: netlify-deploy
+        run: |
+          pnpm add -g netlify
+          bash "${GITHUB_WORKSPACE}/.github/netlify.sh" deploy --prod \
+            --message="Branch ${GITHUB_REF##*/} commit ${GITHUB_SHA}" \
+            --dir=crosswrd-app/build
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
