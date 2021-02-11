@@ -1,6 +1,6 @@
-#!/bin/sh -l
+#!/bin/bash
 
-read -d '' COMMAND <<- EOF
+read -r -d '' COMMAND <<- EOF
   if [ -f "$HOME/ignore" ] && grep "^ignore:$BUILD_DIR" "$HOME/ignore"; then
     echo "$BUILD_DIR didn't change"
   else
@@ -8,12 +8,15 @@ read -d '' COMMAND <<- EOF
   fi
 EOF
 
-OUTPUT=$(sh -c "$COMMAND")
+NETLIFY_OUTPUT=$(sh -c "$COMMAND")
 
-NETLIFY_OUTPUT=$(echo "$OUTPUT")
-NETLIFY_URL=$(echo "$OUTPUT" | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*(--)[a-zA-Z0-9./?=_-]*') #Unique key: --
-NETLIFY_LOGS_URL=$(echo "$OUTPUT" | grep -Eo '(http|https)://app.netlify.com/[a-zA-Z0-9./?=_-]*') #Unique key: app.netlify.com
-NETLIFY_LIVE_URL=$(echo "$OUTPUT" | grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*' | grep -Eov "netlify.com") #Unique key: don't containr -- and app.netlify.com
+NETLIFY_URL=$(grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*(--)[a-zA-Z0-9./?=_-]*' \
+                   <<< "$NETLIFY_OUTPUT")
+NETLIFY_LOGS_URL=$(grep -Eo '(http|https)://app.netlify.com/[a-zA-Z0-9./?=_-]*' \
+                        <<< echo "$NETLIFY_OUTPUT")
+NETLIFY_LIVE_URL=$(grep -Eo '(http|https)://[a-zA-Z0-9./?=_-]*' \
+                        <<< echo "$NETLIFY_OUTPUT" \
+                        | grep -Eov "netlify.com")
 
 echo "::set-output name=NETLIFY_OUTPUT::$NETLIFY_OUTPUT"
 echo "::set-output name=NETLIFY_URL::$NETLIFY_URL"
