@@ -59,6 +59,17 @@ jobs:
           HEAD_REF: ${{ github.head_ref }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
 
+      - uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '📟 Preview deployed to ${{ steps.netlify-deploy.outputs.NETLIFY_URL }}'
+            })
+
       - name: Upload build artifact 🚀
         uses: actions/upload-artifact@v2
         with:
