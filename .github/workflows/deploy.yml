@@ -1,7 +1,10 @@
-name: Build and test
-on: [pull_request]
+name: Build and Deploy
+on:
+  push:
+    branches:
+    - main
 jobs:
-  build-and-test:
+  build-and-deploy:
     runs-on: ubuntu-latest
     environment: netlify
     strategy:
@@ -42,36 +45,13 @@ jobs:
         run: |
           pnpm -C crosswrd-app run build
 
-      - name: Test 🌡
-        run: |
-          pnpm -C crosswrd-app run test
-
       - name: Deploy to Netlify 🚀
         id: netlify-deploy
         run: |
           pnpm add -g netlify
-          bash "${GITHUB_WORKSPACE}/.github/netlify.sh" deploy \
-            --message="Merge of ${HEAD_REF##*/} (${HEAD_SHA})" \
+          bash "${GITHUB_WORKSPACE}/.github/netlify.sh" deploy --prod \
+            --message="Branch ${GITHUB_REF##*/} (${GITHUB_SHA})" \
             --dir=crosswrd-app/build
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-          HEAD_REF: ${{ github.head_ref }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-
-      - uses: actions/github-script@v3
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '📟 Preview deployed to ${{ steps.netlify-deploy.outputs.NETLIFY_URL }}'
-            })
-
-      - name: Upload build artifact 🕵
-        uses: actions/upload-artifact@v2
-        with:
-          name: build
-          path: crosswrd-app/build
