@@ -3,7 +3,7 @@ import { Button, FormControl, InputGroup } from "react-bootstrap";
 
 import { CellMap } from "./Grid";
 import { StateSetter } from "./Helpers";
-import { serializeGridLights } from "./Spiral";
+import { serializeGridLights, deserializeGridLights } from "./Spiral";
 
 type ExportLightsProps = {
   grid: CellMap | null;
@@ -18,6 +18,9 @@ const ExportInput = ({ grid, setGrid, size }: ExportLightsProps) => (
     htmlSize={25}
     onClick={({ target }: React.MouseEvent) =>
       (target as HTMLInputElement).select()
+    }
+    onChange={({ target }) =>
+      setGrid(target?.value ? deserializeGridLights(target?.value) : null)
     }
   />
 );
