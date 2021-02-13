@@ -4,6 +4,7 @@ import { Container } from "react-bootstrap";
 import { Grid, CellMap } from "./Grid";
 import { displayGrid, renderCells } from "./GridDisplay";
 import { WrappedRow, StateSetter, ToggleButton } from "./Helpers";
+import { ExportLights } from "./ExportLights";
 
 type LightsLayoutProps = {
   size: bigint;
@@ -34,6 +35,9 @@ const LightsLayout = ({
       <ToggleButton value={toggleOnHover} toggle={toggleToggleOnHover}>
         Toggle on hover
       </ToggleButton>
+    </WrappedRow>
+    <WrappedRow>
+      <ExportLights {...{ grid, size }} />
     </WrappedRow>
   </Container>
 );

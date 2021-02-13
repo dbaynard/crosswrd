@@ -1,4 +1,4 @@
-import { flow } from "lodash";
+import { chunk, flow } from "lodash";
 
 import { CellMap } from "./Grid";
 import { Reference } from "./Reference";
