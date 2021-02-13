@@ -40,3 +40,5 @@ function* spiralIndices(end: bigint) {
   }
   return index;
 }
+
+type GridLights = boolean[];
