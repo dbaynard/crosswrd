@@ -37,7 +37,7 @@ const LightsLayout = ({
       </ToggleButton>
     </WrappedRow>
     <WrappedRow>
-      <ExportLights {...{ grid, size }} />
+      <ExportLights {...{ grid, setGrid, size }} />
     </WrappedRow>
   </Container>
 );
