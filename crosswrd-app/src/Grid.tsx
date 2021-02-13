@@ -1,9 +1,21 @@
 import React from "react";
+import { flow } from "lodash";
 import { OrderedMap } from "immutable";
 import styled from "styled-components";
 
-import { CellProps } from "./Cell";
-import { Reference } from "./Reference";
+import { CellProps, toggleLight } from "./Cell";
+import { StateSetter } from "./Helpers";
+import { Reference, matchingRefs } from "./Reference";
+
+export const toggleCell = (
+  setGrid: StateSetter<CellMap | null>,
+  reference: Reference
+) => (): void =>
+  setGrid((g) =>
+    flow(
+      [...matchingRefs(reference)].map((r) => (x) => x.update(r, toggleLight))
+    )(g ?? OrderedMap())
+  );
 
 export type CellMap = OrderedMap<Reference, CellProps>;
 
