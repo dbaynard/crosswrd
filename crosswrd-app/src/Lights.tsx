@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Container } from "react-bootstrap";
 
-import { CellMap, Grid } from "./Grid";
+import { Grid, CellMap } from "./Grid";
 import { displayGrid, renderCells } from "./GridDisplay";
 import { WrappedRow, StateSetter } from "./Helpers";
 
