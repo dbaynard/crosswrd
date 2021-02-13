@@ -3,6 +3,13 @@ import styled from "styled-components";
 
 export type CellProps = { light: boolean };
 
+const defaultCellProps: CellProps = { light: false };
+
+export const toggleLight = (props = defaultCellProps): CellProps => ({
+  ...props,
+  light: !props.light,
+});
+
 const RawCell = styled.div<CellProps>`
   width: 100%;
   height: 100%;
