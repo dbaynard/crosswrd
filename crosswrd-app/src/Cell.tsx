@@ -10,7 +10,7 @@ export const toggleLight = (props = defaultCellProps): CellProps => ({
   light: !props.light,
 });
 
-export type CellEditProps = { toggleCell: () => void };
+export type CellEditProps = { toggleCell: () => void; toggleOnHover: boolean };
 
 const RawCell = styled.div<CellProps>`
   width: 100%;
@@ -30,5 +30,9 @@ const RawCell = styled.div<CellProps>`
 `;
 
 export const Cell = (props: CellProps & CellEditProps) => (
-  <RawCell {...props} onClick={props.toggleCell} />
+  <RawCell
+    {...props}
+    onClick={props.toggleCell}
+    onMouseEnter={() => (props.toggleOnHover ? props.toggleCell() : {})}
+  />
 );

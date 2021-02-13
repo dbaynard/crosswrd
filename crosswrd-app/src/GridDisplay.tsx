@@ -27,12 +27,13 @@ export const displayGrid = (
 
 export const renderCells = (
   setGrid: StateSetter<CellMap | null>,
-  grid: GridDisplay
+  grid: GridDisplay,
+  toggleOnHover: boolean
 ): JSX.Element[] =>
   [...grid].map(([r, props]) => (
     <Cell
       key={`${r.x},${r.y}`}
-      {...props}
+      {...{ ...props, toggleOnHover }}
       toggleCell={toggleCell(setGrid, r)}
     />
   ));
