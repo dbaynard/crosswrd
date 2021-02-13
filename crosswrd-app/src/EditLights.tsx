@@ -11,6 +11,7 @@ type EditLightsLayoutProps = {
   size: bigint;
   lights: Lights | null;
   setLights: StateSetter<Lights | null>;
+  clueStarts: ClueStarts | null;
   toggleOnHover: boolean;
   toggleToggleOnHover: () => void;
 };
@@ -18,6 +19,7 @@ const EditLightsLayout = ({
   size,
   lights,
   setLights,
+  clueStarts,
   toggleOnHover,
   toggleToggleOnHover,
 }: EditLightsLayoutProps) => (
@@ -29,7 +31,11 @@ const EditLightsLayout = ({
     </WrappedRow>
     <WrappedRow>
       <Grid {...{ size }}>
-        {renderCells(setLights, displayGrid(size, lights), toggleOnHover)}
+        {renderCells(
+          setLights,
+          displayGrid(size, lights, clueStarts),
+          toggleOnHover
+        )}
       </Grid>
     </WrappedRow>
     <WrappedRow>
@@ -55,7 +61,14 @@ const EditLights = () => {
 
   return (
     <EditLightsLayout
-      {...{ size, lights, setLights, toggleOnHover, toggleToggleOnHover }}
+      {...{
+        size,
+        lights,
+        setLights,
+        clueStarts,
+        toggleOnHover,
+        toggleToggleOnHover,
+      }}
     />
   );
 };
