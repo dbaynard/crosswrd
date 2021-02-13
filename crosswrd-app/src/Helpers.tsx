@@ -1,6 +1,16 @@
 import React from "react";
 import { Button, Col, Row } from "react-bootstrap";
 
+export const popCount = (t: bigint): bigint => {
+  var b = t;
+  var c = 0n;
+  while (b > 0n) {
+    b &= b - 1n;
+    c++;
+  }
+  return c;
+};
+
 export type StateSetter<T> = React.Dispatch<React.SetStateAction<T>>;
 
 type WrappedRowProps = { children: JSX.Element };
