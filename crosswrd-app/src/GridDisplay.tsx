@@ -1,7 +1,7 @@
 import { OrderedMap } from "immutable";
 
 import { Cell, CellProps } from "./Cell";
-import { CellMap } from "./Grid";
+import { CellMap, toggleCell } from "./Grid";
 import { StateSetter } from "./Helpers";
 import { Reference } from "./Reference";
 
@@ -29,4 +29,10 @@ export const renderCells = (
   setGrid: StateSetter<CellMap | null>,
   grid: GridDisplay
 ): JSX.Element[] =>
-  [...grid].map(([r, props]) => <Cell key={`${r.x},${r.y}`} {...props} />);
+  [...grid].map(([r, props]) => (
+    <Cell
+      key={`${r.x},${r.y}`}
+      {...props}
+      toggleCell={toggleCell(setGrid, r)}
+    />
+  ));

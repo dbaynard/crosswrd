@@ -10,6 +10,8 @@ export const toggleLight = (props = defaultCellProps): CellProps => ({
   light: !props.light,
 });
 
+export type CellEditProps = { toggleCell: () => void };
+
 const RawCell = styled.div<CellProps>`
   width: 100%;
   height: 100%;
@@ -27,4 +29,6 @@ const RawCell = styled.div<CellProps>`
   }
 `;
 
-export const Cell = (props: CellProps) => <RawCell {...props} />;
+export const Cell = (props: CellProps & CellEditProps) => (
+  <RawCell {...props} onClick={props.toggleCell} />
+);
