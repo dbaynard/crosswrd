@@ -1,3 +1,6 @@
+import { flow } from "lodash";
+
+import { CellMap } from "./Grid";
 import { Reference } from "./Reference";
 
 function* spiralSpans() {
@@ -42,3 +45,17 @@ function* spiralIndices(end: bigint) {
 }
 
 type GridLights = boolean[];
+
+export const serializeGridLights = (size: bigint): ((_: CellMap) => string) =>
+  flow([gridLightsFromCellMap(size), stringFromGridLights]);
+
+const stringFromGridLights = (gs: GridLights): string =>
+  chunk(gs, 8)
+    .reverse()
+    .map((c) => c.reduceRight((acc, l) => (acc << 1) | +l, 0).toString(16))
+    .join("");
+
+const gridLightsFromCellMap = (size: bigint) => (grid: CellMap): GridLights => {
+  const indices = spiralIndices(size);
+  return [...indices].map((r) => grid.get(r)?.light ?? false);
+};
