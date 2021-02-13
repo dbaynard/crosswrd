@@ -9,3 +9,15 @@ export const WrappedRow = (props: WrappedRowProps) => (
     <Col md="auto">{props.children}</Col>
   </Row>
 );
+
+type ToggleButtonProps = {
+  children: JSX.Element | string;
+  value: boolean;
+  toggle: () => void;
+};
+
+export const ToggleButton = (props: ToggleButtonProps) => (
+  <Button variant="outline-primary" onClick={props.toggle} active={props.value}>
+    {props.children}
+  </Button>
+);
