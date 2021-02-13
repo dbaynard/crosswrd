@@ -1,7 +1,8 @@
 import { OrderedMap } from "immutable";
 
-import { CellProps } from "./Cell";
+import { Cell, CellProps } from "./Cell";
 import { CellMap } from "./Grid";
+import { StateSetter } from "./Helpers";
 import { Reference } from "./Reference";
 
 export type GridDisplay = OrderedMap<Reference, CellProps>;
@@ -23,3 +24,9 @@ export const displayGrid = (
   const g = newGrid(size);
   return grid ? g.merge(grid.filter((_, k) => g.has(k))) : g;
 };
+
+export const renderCells = (
+  setGrid: StateSetter<CellMap | null>,
+  grid: GridDisplay
+): JSX.Element[] =>
+  [...grid].map(([r, props]) => <Cell key={`${r.x},${r.y}`} {...props} />);
