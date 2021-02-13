@@ -1,15 +1,15 @@
 import React from "react";
-import { Col, Container, Row } from "react-bootstrap";
+import { Container } from "react-bootstrap";
+
+import { WrappedRow } from "./Helpers";
 
 const Lights = () => (
   <Container>
-    <Row>
-      <Col>
-        <header>
-          <h1>Edit lights</h1>
-        </header>
-      </Col>
-    </Row>
+    <WrappedRow>
+      <header>
+        <h1>Edit lights</h1>
+      </header>
+    </WrappedRow>
   </Container>
 );
 
