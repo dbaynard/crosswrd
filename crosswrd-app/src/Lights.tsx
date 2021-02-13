@@ -3,7 +3,7 @@ import { Container } from "react-bootstrap";
 
 import { WrappedRow } from "./Helpers";
 
-const Lights = () => (
+const LightsLayout = () => (
   <Container>
     <WrappedRow>
       <header>
@@ -12,5 +12,9 @@ const Lights = () => (
     </WrappedRow>
   </Container>
 );
+
+const Lights = () => {
+  return <LightsLayout />;
+};
 
 export { Lights };
