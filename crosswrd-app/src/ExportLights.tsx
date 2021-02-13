@@ -14,6 +14,9 @@ const ExportInput = ({ grid, size }: ExportLightsProps) => (
     type="string"
     value={grid ? serializeGridLights(size)(grid) : ""}
     htmlSize={25}
+    onClick={({ target }: React.MouseEvent) =>
+      (target as HTMLInputElement).select()
+    }
   />
 );
 
