@@ -31,10 +31,9 @@ const clueStart = (neighbours: (_: Reference) => (boolean | null)[]) => (
   if (!v) return acc;
   const [left, up, right, down] = neighbours(r);
   const directions = Set<Direction>(
-    [
-      !left && right ? Direction.A : null,
-      !up && down ? Direction.D : null,
-    ].filter((x) => !!x) as Direction[]
+    [!left && right && Direction.A, !up && down && Direction.D].filter(
+      (x) => !!x
+    ) as Direction[]
   );
   if (!directions.size) return acc;
   const [i, cs] = acc;
