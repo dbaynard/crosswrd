@@ -19,9 +19,6 @@ const RawCell = styled.div<CellProps>`
   overflow: auto;
   background-color: ${(props) => (props.light ? "white" : "black")};
   place-self: center center;
-  &:empty {
-    height: 30px;
-  }
   &:hover {
     background-color: lightsteelblue;
     transition: all 0.1s ease 0s;
