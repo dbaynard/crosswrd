@@ -1,8 +1,7 @@
 import { chunk, flow, times } from "lodash";
 import { OrderedMap } from "immutable";
 
-import { CellProps } from "./Cell";
-import { CellMap } from "./Lights";
+import { Lights } from "./Lights";
 import { popCount } from "./Helpers";
 import { Reference, rotate180 } from "./Reference";
 
@@ -49,8 +48,8 @@ function* spiralIndices(end: bigint) {
 
 type GridLights = boolean[];
 
-export const serializeGridLights = (size: bigint): ((_: CellMap) => string) =>
-  flow([gridLightsFromCellMap(size), stringFromGridLights]);
+export const serializeGridLights = (size: bigint): ((_: Lights) => string) =>
+  flow([gridLightsFromLights(size), stringFromGridLights]);
 
 const stringFromGridLights = (gs: GridLights): string =>
   chunk(gs, 8)
@@ -58,13 +57,13 @@ const stringFromGridLights = (gs: GridLights): string =>
     .map((c) => c.reduceRight((acc, l) => (acc << 1) | +l, 0).toString(16))
     .join("");
 
-const gridLightsFromCellMap = (size: bigint) => (grid: CellMap): GridLights => {
+const gridLightsFromLights = (size: bigint) => (lights: Lights): GridLights => {
   const indices = spiralIndices(size);
-  return [...indices].map((r) => grid.get(r)?.light ?? false);
+  return [...indices].map((r) => lights.get(r) ?? false);
 };
 
-export const deserializeGridLights = (s: string): CellMap =>
-  flow([gridLightsFromString, chunksFromLights, gridFromChunks])(s);
+export const deserializeGridLights = (s: string): Lights =>
+  flow([gridLightsFromString, chunksFromLights, lightsFromChunks])(s);
 
 const gridLightsFromString = (s: string): GridLights | null =>
   s
@@ -83,9 +82,9 @@ const chunksFromLights = (gs: GridLights): boolean[][] => {
   return chunks;
 };
 
-const gridFromChunks = (chunks: boolean[][]): CellMap =>
+const lightsFromChunks = (chunks: boolean[][]): Lights =>
   OrderedMap(
-    chunks.flatMap((c, index): [Reference, CellProps][] => {
+    chunks.flatMap((c, index): [Reference, boolean][] => {
       const r = BigInt(index);
       const xExp = Number(!(popCount(r & 3n) & 1n));
       const yExp = Number(!(r & 2n));
@@ -104,11 +103,11 @@ const gridFromChunks = (chunks: boolean[][]): CellMap =>
             return Reference({ x, y: y - i });
         }
       };
-      return c.flatMap((light, i): [Reference, CellProps][] => {
+      return c.flatMap((l, i): [Reference, boolean][] => {
         const p = pos(i);
         return [
-          [p, { light }],
-          [rotate180(p), { light }],
+          [p, l],
+          [rotate180(p), l],
         ];
       });
     })

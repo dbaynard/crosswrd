@@ -2,13 +2,6 @@ import styled from "styled-components";
 
 export type CellProps = { light: boolean };
 
-const defaultCellProps: CellProps = { light: false };
-
-export const toggleLight = (props = defaultCellProps): CellProps => ({
-  ...props,
-  light: !props.light,
-});
-
 export type CellEditProps = { toggleCell: () => void; toggleOnHover: boolean };
 
 const RawCell = styled.div<CellProps>`
