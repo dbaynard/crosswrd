@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { startCase } from "lodash";
 import { Button, Tabs, Tab } from "react-bootstrap";
 import { BrowserRouter as Router, useHistory } from "react-router-dom";

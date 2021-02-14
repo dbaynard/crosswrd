@@ -1,4 +1,4 @@
-import React from "react";
+import { MouseEvent } from "react";
 import { Button, FormControl, InputGroup } from "react-bootstrap";
 
 import { CellMap } from "./Grid";
@@ -16,9 +16,7 @@ const ExportInput = ({ grid, setGrid, size }: ExportLightsProps) => (
     type="string"
     value={grid ? serializeGridLights(size)(grid) : ""}
     htmlSize={25}
-    onClick={({ target }: React.MouseEvent) =>
-      (target as HTMLInputElement).select()
-    }
+    onClick={({ target }: MouseEvent) => (target as HTMLInputElement).select()}
     onChange={({ target }) =>
       setGrid(target?.value ? deserializeGridLights(target?.value) : null)
     }
