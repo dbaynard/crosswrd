@@ -1,7 +1,7 @@
 import { OrderedMap } from "immutable";
 
 import { Cell, CellProps } from "./Cell";
-import { CellMap, toggleCell } from "./Grid";
+import { CellMap, toggleCell } from "./Lights";
 import { StateSetter } from "./Helpers";
 import { Reference } from "./Reference";
 

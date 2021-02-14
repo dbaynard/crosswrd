@@ -1,7 +1,7 @@
 import { MouseEvent } from "react";
 import { Button, FormControl, InputGroup } from "react-bootstrap";
 
-import { CellMap } from "./Grid";
+import { CellMap } from "./Lights";
 import { StateSetter } from "./Helpers";
 import { serializeGridLights, deserializeGridLights } from "./Spiral";
 

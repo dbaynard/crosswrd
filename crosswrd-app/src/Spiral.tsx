@@ -2,7 +2,7 @@ import { chunk, flow, times } from "lodash";
 import { OrderedMap } from "immutable";
 
 import { CellProps } from "./Cell";
-import { CellMap } from "./Grid";
+import { CellMap } from "./Lights";
 import { popCount } from "./Helpers";
 import { Reference, rotate180 } from "./Reference";
 
