@@ -62,7 +62,7 @@ const RawGrid = styled.div<RawGridProps>`
     ${(props) => props.size},
     ${(props) => props.cellSize}
   );
-  grid-template-columns: repeat(
+  grid-template-rows: repeat(
     ${(props) => props.size},
     ${(props) => props.cellSize}
   );
