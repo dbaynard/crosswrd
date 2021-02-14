@@ -7,10 +7,8 @@ import { Grid, displayGrid, renderCells } from "./Grid";
 import { WrappedRow, StateSetter, ToggleButton } from "./Helpers";
 import { ExportLights } from "./ExportLights";
 
-type EditLightsLayoutProps = {
+type EditLightsLayoutProps = EditLightsProps & {
   size: bigint;
-  lights: Lights | null;
-  setLights: StateSetter<Lights | null>;
   clueStarts: ClueStarts | null;
   toggleOnHover: boolean;
   toggleToggleOnHover: () => void;
@@ -49,9 +47,13 @@ const EditLightsLayout = ({
   </Container>
 );
 
-const EditLights = () => {
+type EditLightsProps = {
+  lights: Lights | null;
+  setLights: StateSetter<Lights | null>;
+};
+
+const EditLights = ({ lights, setLights }: EditLightsProps) => {
   const size = 15n;
-  const [lights, setLights] = useState<Lights | null>(null);
   const [clueStarts, setClueStarts] = useState<ClueStarts | null>(null);
 
   useEffect(() => {

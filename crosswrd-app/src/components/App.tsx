@@ -8,6 +8,7 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 import "./App.css";
 
+import { Lights } from "../common/Lights";
 import { EditLights } from "./EditLights";
 import { StateSetter } from "./Helpers";
 
@@ -40,13 +41,15 @@ const useRouterLocation = (): [string, StateSetter<string>] => {
 const Tabbed = ({ name }: HomeProps) => {
   const [key, setKey] = useRouterLocation();
 
+  const [lights, setLights] = useState<Lights | null>(null);
+
   return (
     <Tabs activeKey={key} onSelect={(k) => setKey(k ?? "/")}>
       <Tab eventKey="/" title="Home">
         <Home {...{ name }} />
       </Tab>
       <Tab eventKey="/lights" title="Edit Lights">
-        <EditLights />
+        <EditLights {...{ lights, setLights }} />
       </Tab>
     </Tabs>
   );
