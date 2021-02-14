@@ -87,10 +87,10 @@ const gridFromChunks = (chunks: boolean[][]): CellMap =>
   OrderedMap(
     chunks.flatMap((c, index): [Reference, CellProps][] => {
       const r = BigInt(index);
-      const xExp = BigInt(!(popCount(r & 3n) & 1n));
-      const yExp = BigInt(!(r & 2n));
-      const x = ((-1n) ** xExp * (r + 1n)) / 2n; // start
-      const y = ((-1n) ** yExp * r) / 2n; // end
+      const xExp = Number(!(popCount(r & 3n) & 1n));
+      const yExp = Number(!(r & 2n));
+      const x = (BigInt((-1) ** xExp) * (r + 1n)) / 2n; // start
+      const y = (BigInt((-1) ** yExp) * r) / 2n; // end
       const pos = (ind: number): Reference => {
         const i = BigInt(ind);
         switch (r % 4n) {
