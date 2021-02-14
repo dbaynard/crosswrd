@@ -1,6 +1,13 @@
+import { Set } from "immutable";
 import styled from "styled-components";
 
-export type CellProps = { light: boolean };
+import { Direction } from "./ClueStarts";
+
+export type CellProps = {
+  light: boolean;
+  clueNumber?: bigint;
+  directions?: Set<Direction>;
+};
 
 export type CellEditProps = { toggleCell: () => void; toggleOnHover: boolean };
 
@@ -18,6 +25,16 @@ const RawCell = styled.div<CellProps>`
   &:hover {
     background-color: lightsteelblue;
     transition: all 0.1s ease 0s;
+  }
+  position: relative;
+  &::after {
+    content: "${(props) => props.clueNumber?.toString() ?? ""}";
+    z-index: 1;
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding-left: 2px;
+    font-size: x-small;
   }
 `;
 

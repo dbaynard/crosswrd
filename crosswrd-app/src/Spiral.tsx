@@ -1,7 +1,7 @@
 import { chunk, flow, times } from "lodash";
 import { OrderedMap } from "immutable";
 
-import { Lights } from "./Lights";
+import { Lights, sortLights } from "./Lights";
 import { popCount } from "./Helpers";
 import { Reference, matchingRefs } from "./Reference";
 
@@ -63,7 +63,9 @@ const gridLightsFromLights = (size: bigint) => (lights: Lights): GridLights => {
 };
 
 export const deserializeGridLights = (s: string): Lights =>
-  flow([gridLightsFromString, chunksFromLights, lightsFromChunks])(s);
+  flow([gridLightsFromString, chunksFromLights, lightsFromChunks, sortLights])(
+    s
+  );
 
 const gridLightsFromString = (s: string): GridLights | null =>
   s
