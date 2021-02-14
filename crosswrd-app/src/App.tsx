@@ -8,7 +8,7 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 import "./App.css";
 
-import { Lights } from "./EditLights";
+import { EditLights } from "./EditLights";
 
 type HomeProps = { name: string };
 
@@ -38,8 +38,8 @@ const Tabbed = ({ name }: HomeProps) => {
       <Tab eventKey="/" title="Home">
         <Home {...{ name }} />
       </Tab>
-      <Tab eventKey="/lights" title="Lights">
-        <Lights />
+      <Tab eventKey="/lights" title="Edit Lights">
+        <EditLights />
       </Tab>
     </Tabs>
   );

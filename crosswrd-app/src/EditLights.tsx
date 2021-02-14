@@ -1,25 +1,25 @@
 import { useState } from "react";
 import { Container } from "react-bootstrap";
 
-import { Grid, CellMap } from "./Lights";
+import { Grid, Lights } from "./Lights";
 import { displayGrid, renderCells } from "./Grid";
 import { WrappedRow, StateSetter, ToggleButton } from "./Helpers";
 import { ExportLights } from "./ExportLights";
 
-type LightsLayoutProps = {
+type EditLightsLayoutProps = {
   size: bigint;
-  grid: CellMap | null;
-  setGrid: StateSetter<CellMap | null>;
+  lights: Lights | null;
+  setLights: StateSetter<Lights | null>;
   toggleOnHover: boolean;
   toggleToggleOnHover: () => void;
 };
-const LightsLayout = ({
+const EditLightsLayout = ({
   size,
-  grid,
-  setGrid,
+  lights,
+  setLights,
   toggleOnHover,
   toggleToggleOnHover,
-}: LightsLayoutProps) => (
+}: EditLightsLayoutProps) => (
   <Container>
     <WrappedRow>
       <header>
@@ -28,7 +28,7 @@ const LightsLayout = ({
     </WrappedRow>
     <WrappedRow>
       <Grid {...{ size }}>
-        {renderCells(setGrid, displayGrid(size, grid), toggleOnHover)}
+        {renderCells(setLights, displayGrid(size, lights), toggleOnHover)}
       </Grid>
     </WrappedRow>
     <WrappedRow>
@@ -37,23 +37,23 @@ const LightsLayout = ({
       </ToggleButton>
     </WrappedRow>
     <WrappedRow>
-      <ExportLights {...{ grid, setGrid, size }} />
+      <ExportLights {...{ lights, setLights, size }} />
     </WrappedRow>
   </Container>
 );
 
-const Lights = () => {
+const EditLights = () => {
   const size = 15n;
-  const [grid, setGrid] = useState<CellMap | null>(null);
+  const [lights, setLights] = useState<Lights | null>(null);
 
   const [toggleOnHover, setToggleOnHover] = useState<boolean>(false);
   const toggleToggleOnHover = () => setToggleOnHover((x) => !x);
 
   return (
-    <LightsLayout
-      {...{ size, grid, setGrid, toggleOnHover, toggleToggleOnHover }}
+    <EditLightsLayout
+      {...{ size, lights, setLights, toggleOnHover, toggleToggleOnHover }}
     />
   );
 };
 
-export { Lights };
+export { EditLights };
