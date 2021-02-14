@@ -1,13 +1,58 @@
 import { MouseEvent } from "react";
-import { Button, FormControl, InputGroup } from "react-bootstrap";
+import {
+  Dropdown,
+  FormControl,
+  InputGroup,
+  SplitButton,
+} from "react-bootstrap";
 
 import { Lights } from "./Lights";
 import { StateSetter } from "./Helpers";
 import { serializeGridLights, deserializeGridLights } from "./Spiral";
 
-type ExportLightsProps = {
-  lights: Lights | null;
+type ResetLightsProps = {
   setLights: StateSetter<Lights | null>;
+};
+
+const grids = [
+  {
+    code: "00aaaaaabfffffeaaaabfffeaabfeb",
+    description: "Chequerboard through centre",
+  },
+  {
+    code: "015557ffffff555557ffff5557ff57",
+    description: "Chequerboard through vertical centre",
+  },
+  {
+    code: "01ffffffeaaaaabffffeaaabffeabe",
+    description: "Chequerboard around centre",
+  },
+  {
+    code: "01fffd555555fffffd5555fffd55fd",
+    description: "Chequerboard through horizontal centre",
+  },
+];
+
+export const ResetGrids = ({ setLights }: ResetLightsProps) => (
+  <SplitButton
+    id="edit-lights-reset-button"
+    variant="outline-primary"
+    title="Reset"
+    onClick={() => setLights(null)}
+  >
+    {grids.map(({ code, description }) => (
+      <Dropdown.Item
+        key={code}
+        onClick={() => setLights(deserializeGridLights(code))}
+      >
+        {description}
+      </Dropdown.Item>
+    ))}
+  </SplitButton>
+);
+
+type ExportLightsProps = ResetLightsProps & {
+  lights: Lights | null;
   size: bigint;
 };
 
@@ -30,9 +75,7 @@ export const ExportLights = ({ setLights, ...rest }: ExportLightsProps) => (
     </InputGroup.Prepend>
     <ExportInput {...{ setLights, ...rest }} />
     <InputGroup.Append>
-      <Button variant="outline-primary" onClick={() => setLights(null)}>
-        Reset
-      </Button>
+      <ResetGrids {...{ setLights }} />
     </InputGroup.Append>
   </InputGroup>
 );
