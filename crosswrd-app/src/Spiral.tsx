@@ -3,7 +3,7 @@ import { OrderedMap } from "immutable";
 
 import { Lights } from "./Lights";
 import { popCount } from "./Helpers";
-import { Reference, rotate180 } from "./Reference";
+import { Reference, matchingRefs } from "./Reference";
 
 function* spiralSpans() {
   var index = 0n;
@@ -103,12 +103,8 @@ const lightsFromChunks = (chunks: boolean[][]): Lights =>
             return Reference({ x, y: y - i });
         }
       };
-      return c.flatMap((l, i): [Reference, boolean][] => {
-        const p = pos(i);
-        return [
-          [p, l],
-          [rotate180(p), l],
-        ];
-      });
+      return c.flatMap((light, i): [Reference, boolean][] =>
+        [...matchingRefs(pos(i))].map((p) => [p, light])
+      );
     })
   );
