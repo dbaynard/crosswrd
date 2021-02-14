@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Container } from "react-bootstrap";
 
 import { Lights } from "./Lights";
+import { ClueStarts, findClueStarts } from "./ClueStarts";
 import { Grid, displayGrid, renderCells } from "./Grid";
 import { WrappedRow, StateSetter, ToggleButton } from "./Helpers";
 import { ExportLights } from "./ExportLights";
@@ -45,6 +46,9 @@ const EditLightsLayout = ({
 const EditLights = () => {
   const size = 15n;
   const [lights, setLights] = useState<Lights | null>(null);
+  const [clueStarts, setClueStarts] = useState<ClueStarts | null>(null);
+
+  useEffect(() => setClueStarts(lights && findClueStarts(lights)), [lights]);
 
   const [toggleOnHover, setToggleOnHover] = useState<boolean>(false);
   const toggleToggleOnHover = () => setToggleOnHover((x) => !x);
