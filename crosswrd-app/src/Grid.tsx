@@ -1,4 +1,3 @@
-import React from "react";
 import { flow } from "lodash";
 import { OrderedMap } from "immutable";
 import styled from "styled-components";
