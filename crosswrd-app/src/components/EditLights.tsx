@@ -7,9 +7,8 @@ import { Grid, displayGrid, renderCells } from "./Grid";
 import { WrappedRow, StateSetter, ToggleButton } from "./Helpers";
 import { ExportLights } from "./ExportLights";
 
-type EditLightsLayoutProps = EditLightsProps & {
+type EditLightsLayoutProps = Omit<EditLightsProps, "setClueStarts"> & {
   size: bigint;
-  clueStarts: ClueStarts | null;
   toggleOnHover: boolean;
   toggleToggleOnHover: () => void;
 };
@@ -50,29 +49,24 @@ const EditLightsLayout = ({
 type EditLightsProps = {
   lights: Lights | null;
   setLights: StateSetter<Lights | null>;
+  clueStarts: ClueStarts | null;
+  setClueStarts: StateSetter<ClueStarts | null>;
 };
 
-const EditLights = ({ lights, setLights }: EditLightsProps) => {
+const EditLights = (props: EditLightsProps) => {
+  const { lights, setClueStarts } = props;
   const size = 15n;
-  const [clueStarts, setClueStarts] = useState<ClueStarts | null>(null);
 
   useEffect(() => {
     setClueStarts(lights && findClueStarts(lights, size));
-  }, [lights, size]);
+  }, [setClueStarts, lights, size]);
 
   const [toggleOnHover, setToggleOnHover] = useState<boolean>(false);
   const toggleToggleOnHover = () => setToggleOnHover((x) => !x);
 
   return (
     <EditLightsLayout
-      {...{
-        size,
-        lights,
-        setLights,
-        clueStarts,
-        toggleOnHover,
-        toggleToggleOnHover,
-      }}
+      {...{ size, ...props, toggleOnHover, toggleToggleOnHover }}
     />
   );
 };
