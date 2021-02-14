@@ -9,6 +9,7 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import "./App.css";
 
 import { EditLights } from "./EditLights";
+import { StateSetter } from "./Helpers";
 
 type HomeProps = { name: string };
 
@@ -21,7 +22,7 @@ const Home = ({ name }: HomeProps) => (
   </header>
 );
 
-const Tabbed = ({ name }: HomeProps) => {
+const useRouterLocation = (): [string, StateSetter<string>] => {
   const history = useHistory();
   const [key, setKey] = useState<string>(history.location.pathname);
 
@@ -32,6 +33,12 @@ const Tabbed = ({ name }: HomeProps) => {
   useEffect(() => history.listen((location) => setKey(location.pathname)), [
     history,
   ]);
+
+  return [key, setKey];
+};
+
+const Tabbed = ({ name }: HomeProps) => {
+  const [key, setKey] = useRouterLocation();
 
   return (
     <Tabs activeKey={key} onSelect={(k) => setKey(k ?? "/")}>
