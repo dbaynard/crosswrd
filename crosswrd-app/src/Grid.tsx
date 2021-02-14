@@ -2,6 +2,7 @@ import { OrderedMap } from "immutable";
 import styled from "styled-components";
 
 import { Cell, CellProps } from "./Cell";
+import { ClueStarts } from "./ClueStarts";
 import { Lights, toggleCell } from "./Lights";
 import { StateSetter } from "./Helpers";
 import { Reference } from "./Reference";
@@ -18,11 +19,21 @@ export const newGrid = (size: bigint): Grid =>
     })
   );
 
-export const displayGrid = (size: bigint, lights: Lights | null): Grid => {
+export const displayGrid = (
+  size: bigint,
+  lights: Lights | null,
+  clueStarts: ClueStarts | null
+): Grid => {
   const g = newGrid(size);
-  return lights
-    ? g.merge(lights.filter((_, k) => g.has(k)).map((light) => ({ light })))
-    : g;
+  if (!lights) return g;
+  const cells = lights
+    .filter((_, k) => g.has(k))
+    .map((light) => ({ light } as CellProps));
+  if (!clueStarts) return g.merge(cells);
+  const numberedCells = cells.merge(
+    clueStarts?.map((p) => ({ light: true, ...p })) ?? (OrderedMap() as Grid)
+  );
+  return g.merge(numberedCells);
 };
 
 export const renderCells = (
