@@ -6,14 +6,20 @@ import { Reference, matchingRefs } from "./Reference";
 
 const toggleLight = (light = false): boolean => !light;
 
+const togglePair = (r: Reference) =>
+  flow([...matchingRefs(r)].map((p) => (x) => x.update(p, toggleLight)));
+
 export const toggleCell = (
   setLights: StateSetter<Lights | null>,
-  reference: Reference
+  r: Reference
 ) => (): void =>
-  setLights((g) =>
-    flow(
-      [...matchingRefs(reference)].map((r) => (x) => x.update(r, toggleLight))
-    )(g ?? OrderedMap())
+  setLights((l) => flow([togglePair(r), sortLights])(l ?? OrderedMap()));
+
+export const sortLights = (l: Lights): Lights =>
+  l.sortBy(
+    (_: boolean, r: Reference) => r,
+    (a: Reference, b: Reference) =>
+      a.y > b.y ? -1 : a.y < b.y ? 1 : a.x < b.x ? -1 : 1
   );
 
 export type Lights = OrderedMap<Reference, boolean>;
