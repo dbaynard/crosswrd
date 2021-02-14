@@ -8,7 +8,7 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 import "./App.css";
 
-import { Lights } from "./Lights";
+import { Lights } from "./EditLights";
 
 type HomeProps = { name: string };
 
