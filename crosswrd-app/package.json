@@ -24,6 +24,8 @@
     "@types/seedrandom": "^2.4.28",
     "@types/styled-components": "^5.1.7",
     "bootstrap": "4.6",
+    "fp-ts": "^2.9.5",
+    "immutable": "^4.0.0-rc.12",
     "jquery": "^3.5.1",
     "lodash": "^4.17.20",
     "popper.js": "^1.16.1",
