@@ -1,4 +1,4 @@
-import React from "react";
+import { Dispatch, SetStateAction } from "react";
 import { Button, Col, Row } from "react-bootstrap";
 
 export const popCount = (t: bigint): bigint => {
@@ -11,7 +11,7 @@ export const popCount = (t: bigint): bigint => {
   return c;
 };
 
-export type StateSetter<T> = React.Dispatch<React.SetStateAction<T>>;
+export type StateSetter<T> = Dispatch<SetStateAction<T>>;
 
 type WrappedRowProps = { children: JSX.Element };
 export const WrappedRow = (props: WrappedRowProps) => (
