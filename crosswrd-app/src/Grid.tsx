@@ -55,22 +55,22 @@ type RawGridProps = {
 };
 
 const RawGrid = styled.div<RawGridProps>`
-  padding: 1px;
+  padding: calc(1px + 0.05vmin);
   display: grid;
   place-content: start center;
   grid-template-columns: repeat(
     ${(props) => props.size},
     ${(props) => props.cellSize}
   );
-  grid-template-columns: repeat(
+  grid-template-rows: repeat(
     ${(props) => props.size},
     ${(props) => props.cellSize}
   );
   border: 1px black;
   width: fit-content;
   background-color: black;
-  column-gap: 1px;
-  row-gap: 1px;
+  column-gap: calc(0.6px + 0.05vmin);
+  row-gap: calc(0.6px + 0.05vmin);
   margin: auto;
 `;
 
@@ -80,7 +80,7 @@ export type GridProps = {
 };
 
 export const Grid = ({ size, children }: GridProps) => (
-  <RawGrid size={Number(size)} cellSize="30px">
+  <RawGrid size={Number(size)} cellSize="calc(7px + 3.5vmin)">
     {children}
   </RawGrid>
 );

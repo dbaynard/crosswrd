@@ -71,7 +71,7 @@ const ExportInput = ({ lights, setLights, size }: ExportLightsProps) => (
 export const ExportLights = ({ setLights, ...rest }: ExportLightsProps) => (
   <InputGroup style={{ width: "fit-content", margin: "auto" }}>
     <InputGroup.Prepend>
-      <InputGroup.Text>Import/Export</InputGroup.Text>
+      <InputGroup.Text>I/O</InputGroup.Text>
     </InputGroup.Prepend>
     <ExportInput {...{ setLights, ...rest }} />
     <InputGroup.Append>

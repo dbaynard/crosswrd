@@ -19,9 +19,6 @@ const RawCell = styled.div<CellProps>`
   overflow: auto;
   background-color: ${(props) => (props.light ? "white" : "black")};
   place-self: center center;
-  &:empty {
-    height: 30px;
-  }
   &:hover {
     background-color: lightsteelblue;
     transition: all 0.1s ease 0s;
@@ -34,7 +31,7 @@ const RawCell = styled.div<CellProps>`
     left: 0;
     top: 0;
     padding-left: 2px;
-    font-size: x-small;
+    font-size: calc(0.2rem + 1vmin);
   }
 `;
 
@@ -42,6 +39,7 @@ export const Cell = (props: CellProps & CellEditProps) => (
   <RawCell
     {...props}
     onClick={props.toggleCell}
-    onMouseEnter={() => (props.toggleOnHover ? props.toggleCell() : {})}
+    onDragEnter={props.toggleCell}
+    onPointerEnter={() => (props.toggleOnHover ? props.toggleCell() : {})}
   />
 );
