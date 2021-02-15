@@ -31,7 +31,7 @@ const RawCell = styled.div<CellProps>`
     left: 0;
     top: 0;
     padding-left: 2px;
-    font-size: x-small;
+    font-size: calc(0.2rem + 1vmin);
   }
 `;
 
