@@ -39,6 +39,6 @@ export const Cell = (props: CellProps & CellEditProps) => (
   <RawCell
     {...props}
     onClick={props.toggleCell}
-    onMouseEnter={() => (props.toggleOnHover ? props.toggleCell() : {})}
+    onPointerEnter={() => (props.toggleOnHover ? props.toggleCell() : {})}
   />
 );
