@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 import { Cell, CellProps } from "./Cell";
 import { ClueStarts } from "./ClueStarts";
-import { Lights, toggleCell } from "./Lights";
+import { Lights, togglingLightPair } from "./Lights";
 import { StateSetter } from "./Helpers";
 import { Reference } from "./Reference";
 
@@ -45,7 +45,7 @@ export const renderCells = (
     <Cell
       key={`${r.x},${r.y}`}
       {...{ ...props, toggleOnHover }}
-      toggleCell={toggleCell(setLights, r)}
+      toggleCell={() => setLights(togglingLightPair(r))}
     />
   ));
 

@@ -1,19 +1,15 @@
 import { flow } from "lodash";
 import { OrderedMap } from "immutable";
 
-import { StateSetter } from "./Helpers";
 import { Reference, matchingRefs } from "./Reference";
 
-const toggleLight = (light = false): boolean => !light;
+export const togglingLightPair = (r: Reference) => (l: Lights | null): Lights =>
+  flow([toggleLightPair(r), sortLights])(l ?? OrderedMap());
 
-const togglePair = (r: Reference) =>
+const toggleLightPair = (r: Reference): ((_: Lights) => Lights) =>
   flow([...matchingRefs(r)].map((p) => (x) => x.update(p, toggleLight)));
 
-export const toggleCell = (
-  setLights: StateSetter<Lights | null>,
-  r: Reference
-) => (): void =>
-  setLights((l) => flow([togglePair(r), sortLights])(l ?? OrderedMap()));
+const toggleLight = (light = false): boolean => !light;
 
 export const sortLights = (l: Lights): Lights =>
   l.sortBy(
