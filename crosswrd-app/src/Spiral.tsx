@@ -2,7 +2,7 @@ import { chunk, flow, times } from "lodash";
 import { OrderedMap } from "immutable";
 
 import { Lights, sortLights } from "./Lights";
-import { popCount } from "./Helpers";
+import { popCount } from "./Utils";
 import { Reference, matchingRefs } from "./Reference";
 
 function* spiralSpans() {
