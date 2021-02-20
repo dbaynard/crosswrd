@@ -1,12 +1,8 @@
-import { Set } from "immutable";
 import styled from "styled-components";
-
-import { Direction } from "../common/ClueStarts";
 
 export type CellProps = {
   light: boolean;
   clueNumber?: bigint;
-  directions?: Set<Direction>;
 };
 
 export type CellEditProps = { toggleCell: () => void; toggleOnHover: boolean };
