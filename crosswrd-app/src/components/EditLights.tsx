@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { pick } from "lodash";
 import { Container } from "react-bootstrap";
 
 import { Lights } from "../common/Lights";
@@ -12,14 +13,7 @@ type EditLightsLayoutProps = Omit<EditLightsProps, "setClueStarts"> & {
   toggleOnHover: boolean;
   toggleToggleOnHover: () => void;
 };
-const EditLightsLayout = ({
-  size,
-  lights,
-  setLights,
-  clueStarts,
-  toggleOnHover,
-  toggleToggleOnHover,
-}: EditLightsLayoutProps) => (
+const EditLightsLayout = (props: EditLightsLayoutProps) => (
   <Container>
     <WrappedRow>
       <header>
@@ -27,21 +21,24 @@ const EditLightsLayout = ({
       </header>
     </WrappedRow>
     <WrappedRow>
-      <Grid {...{ size }}>
+      <Grid size={props.size}>
         {renderCells(
-          setLights,
-          displayGrid(size, lights, clueStarts),
-          toggleOnHover
+          props.setLights,
+          displayGrid(props.size, props.lights, props.clueStarts),
+          props.toggleOnHover
         )}
       </Grid>
     </WrappedRow>
     <WrappedRow>
-      <ToggleButton value={toggleOnHover} toggle={toggleToggleOnHover}>
+      <ToggleButton
+        value={props.toggleOnHover}
+        toggle={props.toggleToggleOnHover}
+      >
         Toggle on hover
       </ToggleButton>
     </WrappedRow>
     <WrappedRow>
-      <ExportLights {...{ lights, setLights, size }} />
+      <ExportLights {...pick(props, ["lights", "setLights", "size"])} />
     </WrappedRow>
   </Container>
 );
