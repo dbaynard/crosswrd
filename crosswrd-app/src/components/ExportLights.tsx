@@ -6,9 +6,9 @@ import {
   SplitButton,
 } from "react-bootstrap";
 
-import { Lights } from "./Lights";
+import { Lights } from "../common/Lights";
+import { serializeGridLights, deserializeGridLights } from "../common/Spiral";
 import { StateSetter } from "./Helpers";
-import { serializeGridLights, deserializeGridLights } from "./Spiral";
 
 type ResetLightsProps = {
   setLights: StateSetter<Lights | null>;

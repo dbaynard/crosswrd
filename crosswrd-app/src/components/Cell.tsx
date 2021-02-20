@@ -1,7 +1,7 @@
 import { Set } from "immutable";
 import styled from "styled-components";
 
-import { Direction } from "./ClueStarts";
+import { Direction } from "../common/ClueStarts";
 
 export type CellProps = {
   light: boolean;

@@ -1,11 +1,11 @@
 import { OrderedMap } from "immutable";
 import styled from "styled-components";
 
+import { ClueStarts } from "../common/ClueStarts";
+import { Lights, togglingLightPair } from "../common/Lights";
+import { Reference } from "../common/Reference";
 import { Cell, CellProps } from "./Cell";
-import { ClueStarts } from "./ClueStarts";
-import { Lights, toggleCell } from "./Lights";
 import { StateSetter } from "./Helpers";
-import { Reference } from "./Reference";
 
 export type Grid = OrderedMap<Reference, CellProps>;
 
@@ -45,7 +45,7 @@ export const renderCells = (
     <Cell
       key={`${r.x},${r.y}`}
       {...{ ...props, toggleOnHover }}
-      toggleCell={toggleCell(setLights, r)}
+      toggleCell={() => setLights(togglingLightPair(r))}
     />
   ));
 
