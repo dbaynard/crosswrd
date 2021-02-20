@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { Container } from "react-bootstrap";
 
-import { Lights } from "./Lights";
-import { ClueStarts, findClueStarts } from "./ClueStarts";
+import { Lights } from "../common/Lights";
+import { ClueStarts, findClueStarts } from "../common/ClueStarts";
 import { Grid, displayGrid, renderCells } from "./Grid";
 import { WrappedRow, StateSetter, ToggleButton } from "./Helpers";
 import { ExportLights } from "./ExportLights";
