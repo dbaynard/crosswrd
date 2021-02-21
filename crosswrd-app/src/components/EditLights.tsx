@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import { pick } from "lodash";
 import { Container } from "react-bootstrap";
 
 import { Lights } from "../common/Lights";
 import { ClueStarts, findClueStarts } from "../common/ClueStarts";
-import { Grid, displayGrid, renderCells } from "./Grid";
+import { Grid } from "./Grid";
 import { WrappedRow, StateSetter, ToggleButton } from "./Helpers";
 import { ExportLights } from "./ExportLights";
 
@@ -37,13 +36,13 @@ const EditLightsLayout = (props: EditLightsLayoutProps) => (
 type EditLightsProps = {
   size: bigint;
   lights: Lights | null;
+  grid: Grid;
   setLights: StateSetter<Lights | null>;
-  clueStarts: ClueStarts | null;
   setClueStarts: StateSetter<ClueStarts | null>;
 };
 
 const EditLights = (props: EditLightsProps) => {
-  const { size, lights, setLights, clueStarts, setClueStarts } = props;
+  const { size, lights, grid, setLights, setClueStarts } = props;
 
   useEffect(() => {
     setClueStarts(lights && findClueStarts(lights, size));
@@ -56,13 +55,7 @@ const EditLights = (props: EditLightsProps) => {
       {...{ toggleOnHover, toggleToggleOnHover }}
       export={<ExportLights {...{ lights, setLights, size }} />}
     >
-      <Grid size={props.size}>
-        {renderCells(
-          props.setLights,
-          displayGrid(size, lights, clueStarts),
-          toggleOnHover
-        )}
-      </Grid>
+      <Grid {...{ size, grid, setLights, toggleOnHover }} />
     </EditLightsLayout>
   );
 };

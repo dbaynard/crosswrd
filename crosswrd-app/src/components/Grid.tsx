@@ -36,19 +36,6 @@ export const displayGrid = (
   return g.merge(numberedCells);
 };
 
-export const renderCells = (
-  setLights: StateSetter<Lights | null>,
-  grid: Grid,
-  toggleOnHover: boolean
-): JSX.Element[] =>
-  [...grid].map(([r, props]) => (
-    <Cell
-      key={`${r.x},${r.y}`}
-      {...{ ...props, toggleOnHover }}
-      toggleCell={() => setLights(togglingLightPair(r))}
-    />
-  ));
-
 type RawGridProps = {
   size: number;
   cellSize: string;
@@ -76,11 +63,22 @@ const RawGrid = styled.div<RawGridProps>`
 
 export type GridProps = {
   size: bigint;
-  children: JSX.Element[];
+  grid: Grid;
+  setLights: StateSetter<Lights | null>;
+  toggleOnHover: boolean;
 };
 
-export const Grid = ({ size, children }: GridProps) => (
-  <RawGrid size={Number(size)} cellSize="calc(7px + 3.5vmin)">
-    {children}
-  </RawGrid>
-);
+export const Grid = (props: GridProps) => {
+  const { size, grid, setLights, toggleOnHover } = props;
+  return (
+    <RawGrid size={Number(size)} cellSize="calc(7px + 3.5vmin)">
+      {[...grid].map(([r, cellProps]) => (
+        <Cell
+          key={`${r.x},${r.y}`}
+          {...{ ...cellProps, toggleOnHover }}
+          toggleCell={() => setLights(togglingLightPair(r))}
+        />
+      ))}
+    </RawGrid>
+  );
+};
