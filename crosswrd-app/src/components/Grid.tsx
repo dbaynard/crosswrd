@@ -1,4 +1,5 @@
 import { OrderedMap } from "immutable";
+import { pick } from "lodash";
 import styled from "styled-components";
 
 import { ClueStarts } from "../common/ClueStarts";
@@ -70,13 +71,20 @@ export type GridProps = {
 
 export const Grid = (props: GridProps) => {
   const { size, grid, setLights, toggleOnHover } = props;
+  const toggleCell = (r: Reference) => setLights(togglingLightPair(r));
+  const lightsProps = (r: Reference) => ({
+    onClick: () => toggleCell(r),
+    onDragEnter: () => toggleCell(r),
+    onMouseEnter: () => (toggleOnHover ? toggleCell(r) : {}),
+  });
+
   return (
     <RawGrid size={Number(size)} cellSize="calc(7px + 3.5vmin)">
       {[...grid].map(([r, cellProps]) => (
         <Cell
           key={`${r.x},${r.y}`}
-          {...{ ...cellProps, toggleOnHover }}
-          toggleCell={() => setLights(togglingLightPair(r))}
+          {...{ toggleOnHover, ...lightsProps(r) }}
+          {...pick(cellProps, ["light", "clueNumber"])}
         />
       ))}
     </RawGrid>
