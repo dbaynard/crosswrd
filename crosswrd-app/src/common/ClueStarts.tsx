@@ -3,12 +3,9 @@ import { OrderedMap, Set } from "immutable";
 import { Lights } from "./Lights";
 import { Reference } from "./Reference";
 
-export enum Direction {
-  A = "A",
-  D = "D",
-}
+export type Tack = "A" | "D";
 
-export type ClueStart = { clueNumber: bigint; directions: Set<Direction> };
+export type ClueStart = { clueNumber: bigint; tacks: Set<Tack> };
 
 export type ClueStarts = OrderedMap<Reference, ClueStart>;
 
@@ -30,14 +27,12 @@ const clueStart = (neighbours: (_: Reference) => (boolean | null)[]) => (
 ): [bigint, ClueStarts] => {
   if (!v) return acc;
   const [left, up, right, down] = neighbours(r);
-  const directions = Set<Direction>(
-    [!left && right && Direction.A, !up && down && Direction.D].filter(
-      (x) => !!x
-    ) as Direction[]
+  const tacks = Set<Tack>(
+    [!left && right && "A", !up && down && "D"].filter((x) => !!x) as Tack[]
   );
-  if (!directions.size) return acc;
+  if (!tacks.size) return acc;
   const [i, cs] = acc;
-  return [i + 1n, cs.set(r, { clueNumber: i, directions })];
+  return [i + 1n, cs.set(r, { clueNumber: i, tacks })];
 };
 
 const inGrid = (size: bigint) => (_: unknown, r: Reference): boolean =>
