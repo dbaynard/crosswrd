@@ -20,7 +20,7 @@ const RawCell = styled.div<CellProps>`
     transition: all 0.1s ease 0s;
   }
   position: relative;
-  &::after {
+  &::before {
     content: "${(props) => props.clueNumber?.toString() ?? ""}";
     z-index: 1;
     position: absolute;
