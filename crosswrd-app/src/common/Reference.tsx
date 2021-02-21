@@ -12,3 +12,5 @@ export const rotate180 = (r: Reference): Reference =>
 
 export const matchingRefs = (r: Reference): Set<Reference> =>
   Set([r, rotate180(r)]);
+
+export type Trajectory = "Up" | "Down" | "Left" | "Right";
