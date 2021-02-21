@@ -1,7 +1,7 @@
 import { OrderedMap, Set } from "immutable";
 
 import { Lights } from "./Lights";
-import { Reference } from "./Reference";
+import { Reference, cellTo } from "./Reference";
 
 export type Tack = "A" | "D";
 
@@ -13,11 +13,11 @@ const experiment = (f: (_: Reference) => Reference[]) => <V,>(
   w: OrderedMap<Reference, V | null>
 ) => (r: Reference): (V | null)[] => f(r).map((x) => w.get(x, null));
 
-const neighbourhood = experiment(({ x, y }) => [
-  Reference({ x: x - 1n, y }),
-  Reference({ x, y: y + 1n }),
-  Reference({ x: x + 1n, y }),
-  Reference({ x, y: y - 1n }),
+const neighbourhood = experiment((r) => [
+  cellTo(1n, r, "Left"),
+  cellTo(1n, r, "Up"),
+  cellTo(1n, r, "Right"),
+  cellTo(1n, r, "Down"),
 ]);
 
 const clueStart = (neighbours: (_: Reference) => (boolean | null)[]) => (
