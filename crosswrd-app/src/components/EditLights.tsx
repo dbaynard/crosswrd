@@ -9,7 +9,6 @@ import { WrappedRow, StateSetter, ToggleButton } from "./Helpers";
 import { ExportLights } from "./ExportLights";
 
 type EditLightsLayoutProps = Omit<EditLightsProps, "setClueStarts"> & {
-  size: bigint;
   toggleOnHover: boolean;
   toggleToggleOnHover: () => void;
 };
@@ -44,6 +43,7 @@ const EditLightsLayout = (props: EditLightsLayoutProps) => (
 );
 
 type EditLightsProps = {
+  size: bigint;
   lights: Lights | null;
   setLights: StateSetter<Lights | null>;
   clueStarts: ClueStarts | null;
@@ -51,8 +51,7 @@ type EditLightsProps = {
 };
 
 const EditLights = (props: EditLightsProps) => {
-  const { lights, setClueStarts } = props;
-  const size = 15n;
+  const { size, lights, setClueStarts } = props;
 
   useEffect(() => {
     setClueStarts(lights && findClueStarts(lights, size));
@@ -62,9 +61,7 @@ const EditLights = (props: EditLightsProps) => {
   const toggleToggleOnHover = () => setToggleOnHover((x) => !x);
 
   return (
-    <EditLightsLayout
-      {...{ size, ...props, toggleOnHover, toggleToggleOnHover }}
-    />
+    <EditLightsLayout {...{ ...props, toggleOnHover, toggleToggleOnHover }} />
   );
 };
 

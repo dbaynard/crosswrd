@@ -42,6 +42,7 @@ const useRouterLocation = (): [string, StateSetter<string>] => {
 const Tabbed = ({ name }: HomeProps) => {
   const [key, setKey] = useRouterLocation();
 
+  const size = 15n;
   const [lights, setLights] = useState<Lights | null>(null);
   const [clueStarts, setClueStarts] = useState<ClueStarts | null>(null);
 
@@ -51,7 +52,9 @@ const Tabbed = ({ name }: HomeProps) => {
         <Home {...{ name }} />
       </Tab>
       <Tab eventKey="/lights" title="Edit Lights">
-        <EditLights {...{ lights, setLights, clueStarts, setClueStarts }} />
+        <EditLights
+          {...{ size, lights, setLights, clueStarts, setClueStarts }}
+        />
       </Tab>
     </Tabs>
   );
