@@ -40,9 +40,13 @@ const clueStart = (neighbours: (_: Reference) => (boolean | null)[]) => (
   return [i + 1n, cs.set(r, { clueNumber: i, directions })];
 };
 
-export const findClueStarts = (lights: Lights): ClueStarts => {
-  const neighbours = neighbourhood(lights);
-  return lights.reduce(clueStart(neighbours), [
+const inGrid = (size: bigint) => (_: unknown, r: Reference): boolean =>
+  [r.x, r.y].every((z) => Math.abs(Number(z)) <= size / 2n);
+
+export const findClueStarts = (lights: Lights, size: bigint): ClueStarts => {
+  const grid = lights.filter(inGrid(size));
+  const neighbours = neighbourhood(grid);
+  return grid.reduce(clueStart(neighbours), [
     1n,
     OrderedMap() as ClueStarts,
   ])[1];

@@ -54,7 +54,9 @@ const EditLights = () => {
   const [lights, setLights] = useState<Lights | null>(null);
   const [clueStarts, setClueStarts] = useState<ClueStarts | null>(null);
 
-  useEffect(() => setClueStarts(lights && findClueStarts(lights)), [lights]);
+  useEffect(() => {
+    setClueStarts(lights && findClueStarts(lights, size));
+  }, [lights, size]);
 
   const [toggleOnHover, setToggleOnHover] = useState<boolean>(false);
   const toggleToggleOnHover = () => setToggleOnHover((x) => !x);
