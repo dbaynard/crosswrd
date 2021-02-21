@@ -8,9 +8,11 @@ import { Grid, displayGrid, renderCells } from "./Grid";
 import { WrappedRow, StateSetter, ToggleButton } from "./Helpers";
 import { ExportLights } from "./ExportLights";
 
-type EditLightsLayoutProps = Omit<EditLightsProps, "setClueStarts"> & {
+type EditLightsLayoutProps = {
   toggleOnHover: boolean;
   toggleToggleOnHover: () => void;
+  children: JSX.Element;
+  export: JSX.Element;
 };
 const EditLightsLayout = (props: EditLightsLayoutProps) => (
   <Container>
@@ -19,15 +21,7 @@ const EditLightsLayout = (props: EditLightsLayoutProps) => (
         <h1>Edit lights</h1>
       </header>
     </WrappedRow>
-    <WrappedRow>
-      <Grid size={props.size}>
-        {renderCells(
-          props.setLights,
-          displayGrid(props.size, props.lights, props.clueStarts),
-          props.toggleOnHover
-        )}
-      </Grid>
-    </WrappedRow>
+    <WrappedRow>{props.children}</WrappedRow>
     <WrappedRow>
       <ToggleButton
         value={props.toggleOnHover}
@@ -36,9 +30,7 @@ const EditLightsLayout = (props: EditLightsLayoutProps) => (
         Toggle on hover
       </ToggleButton>
     </WrappedRow>
-    <WrappedRow>
-      <ExportLights {...pick(props, ["lights", "setLights", "size"])} />
-    </WrappedRow>
+    <WrappedRow>{props.export}</WrappedRow>
   </Container>
 );
 
@@ -51,7 +43,7 @@ type EditLightsProps = {
 };
 
 const EditLights = (props: EditLightsProps) => {
-  const { size, lights, setClueStarts } = props;
+  const { size, lights, setLights, clueStarts, setClueStarts } = props;
 
   useEffect(() => {
     setClueStarts(lights && findClueStarts(lights, size));
@@ -59,9 +51,19 @@ const EditLights = (props: EditLightsProps) => {
 
   const [toggleOnHover, setToggleOnHover] = useState<boolean>(false);
   const toggleToggleOnHover = () => setToggleOnHover((x) => !x);
-
   return (
-    <EditLightsLayout {...{ ...props, toggleOnHover, toggleToggleOnHover }} />
+    <EditLightsLayout
+      {...{ toggleOnHover, toggleToggleOnHover }}
+      export={<ExportLights {...{ lights, setLights, size }} />}
+    >
+      <Grid size={props.size}>
+        {renderCells(
+          props.setLights,
+          displayGrid(size, lights, clueStarts),
+          toggleOnHover
+        )}
+      </Grid>
+    </EditLightsLayout>
   );
 };
 
