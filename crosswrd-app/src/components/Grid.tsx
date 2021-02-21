@@ -16,7 +16,8 @@ export const newGrid = (size: bigint): Grid =>
       const i = BigInt(index);
       const y = size / 2n - i / size;
       const x = (i % size) - size / 2n;
-      return [Reference({ x, y }), { light: false }];
+      const r = Reference({ x, y });
+      return [r, { r, light: false }];
     })
   );
 
@@ -29,10 +30,11 @@ export const displayGrid = (
   if (!lights) return g;
   const cells = lights
     .filter((_, k) => g.has(k))
-    .map((light) => ({ light } as CellProps));
+    .map((light, r) => ({ r, light } as CellProps));
   if (!clueStarts) return g.merge(cells);
   const numberedCells = cells.merge(
-    clueStarts?.map((p) => ({ light: true, ...p })) ?? (OrderedMap() as Grid)
+    clueStarts?.map((p, r) => ({ r, light: true, ...p })) ??
+      (OrderedMap() as Grid)
   );
   return g.merge(numberedCells);
 };
@@ -84,7 +86,7 @@ export const Grid = (props: GridProps) => {
         <Cell
           key={`${r.x},${r.y}`}
           {...{ toggleOnHover, ...lightsProps(r) }}
-          {...pick(cellProps, ["light", "clueNumber"])}
+          {...pick(cellProps, ["r", "light", "clueNumber"])}
         />
       ))}
     </RawGrid>

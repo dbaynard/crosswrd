@@ -1,6 +1,8 @@
 import styled from "styled-components";
 
-export type CellProps = RawCellProps;
+import { Reference } from "../common/Reference";
+
+export type CellProps = RawCellProps & { r: Reference };
 
 type RawCellProps = {
   light: boolean;
@@ -31,4 +33,6 @@ const RawCell = styled.div<RawCellProps>`
   }
 `;
 
-export const Cell = (props: CellProps) => <RawCell {...props} />;
+export const Cell = (props: CellProps) => (
+  <RawCell id={`${props.r.x},${props.r.y}`} {...props} />
+);
