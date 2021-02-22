@@ -3,6 +3,7 @@ import { pick } from "lodash";
 import styled from "styled-components";
 
 import { ClueStarts } from "../common/ClueStarts";
+import { Letters } from "../common/Letter";
 import { Lights, togglingLightPair } from "../common/Lights";
 import { Reference } from "../common/Reference";
 import { Cell, CellProps } from "./Cell";
@@ -68,11 +69,12 @@ export type GridProps = {
   size: bigint;
   grid: Grid;
   setLights: StateSetter<Lights | null>;
+  letters: Letters | null;
   toggleOnHover: boolean;
 };
 
 export const Grid = (props: GridProps) => {
-  const { size, grid, setLights, toggleOnHover } = props;
+  const { size, setLights, grid, letters, toggleOnHover } = props;
   const toggleCell = (r: Reference) => setLights(togglingLightPair(r));
   const lightsProps = (r: Reference) => ({
     onClick: () => toggleCell(r),
@@ -85,6 +87,7 @@ export const Grid = (props: GridProps) => {
       {[...grid].map(([r, cellProps]) => (
         <Cell
           key={`${r.x},${r.y}`}
+          letter={letters ? letters.get(r) : undefined}
           {...{ toggleOnHover, ...lightsProps(r) }}
           {...pick(cellProps, ["r", "light", "clueNumber"])}
         />

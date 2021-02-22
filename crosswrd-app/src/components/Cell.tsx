@@ -1,8 +1,12 @@
 import styled from "styled-components";
 
 import { Reference } from "../common/Reference";
+import { Letter } from "../common/Letter";
 
-export type CellProps = RawCellProps & { r: Reference };
+export type CellProps = RawCellProps & {
+  r: Reference;
+  letter?: Letter;
+};
 
 type RawCellProps = {
   light: boolean;
