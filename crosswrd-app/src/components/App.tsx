@@ -11,6 +11,7 @@ import "./App.css";
 import { ClueStarts } from "../common/ClueStarts";
 import { Lights } from "../common/Lights";
 import { Letters } from "../common/Letter";
+import { EditClues } from "./EditClues";
 import { EditLights } from "./EditLights";
 import { StateSetter } from "./Helpers";
 import { Grid, displayGrid } from "./Grid";
@@ -62,6 +63,9 @@ const Tabbed = ({ name }: HomeProps) => {
         <EditLights
           {...{ size, lights, setLights, grid, setClueStarts, letters }}
         />
+      </Tab>
+      <Tab eventKey="/clues" title="Edit Clues">
+        <EditClues {...{ size, grid, setLights, letters, setLetters }} />
       </Tab>
     </Tabs>
   );
