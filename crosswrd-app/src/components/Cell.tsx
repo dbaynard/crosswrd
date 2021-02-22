@@ -25,7 +25,7 @@ const RawCell = styled.div<CellProps>`
     z-index: 1;
     position: absolute;
     left: 0;
-    top: 0;
+    top: -1px;
     padding-left: 2px;
     font-size: calc(0.2rem + 1vmin);
   }
