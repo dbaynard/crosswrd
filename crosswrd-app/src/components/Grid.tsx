@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { OrderedMap } from "immutable";
 import { pick } from "lodash";
 import styled from "styled-components";
@@ -43,6 +44,7 @@ export const displayGrid = (
 type RawGridProps = {
   size: number;
   cellSize: string;
+  cellSelected: boolean;
 };
 
 const RawGrid = styled.div<RawGridProps>`
@@ -63,6 +65,9 @@ const RawGrid = styled.div<RawGridProps>`
   column-gap: calc(0.6px + 0.05vmin);
   row-gap: calc(0.6px + 0.05vmin);
   margin: auto;
+  &:focus {
+    outline: ${(props) => (props.cellSelected ? "none" : "lightskyblue solid")};
+  }
 `;
 
 export type GridProps = {
@@ -74,7 +79,9 @@ export type GridProps = {
 };
 
 export const Grid = (props: GridProps) => {
-  const { size, setLights, grid, letters, toggleOnHover } = props;
+  const { setLights, grid, letters, toggleOnHover } = props;
+  const [selected] = useState<Reference | null>(null);
+
   const toggleCell = (r: Reference) => setLights(togglingLightPair(r));
   const lightsProps = (r: Reference) => ({
     onClick: () => toggleCell(r),
@@ -83,10 +90,17 @@ export const Grid = (props: GridProps) => {
   });
 
   return (
-    <RawGrid size={Number(size)} cellSize="calc(7px + 3.5vmin)">
+    <RawGrid
+      size={Number(props.size)}
+      cellSize="calc(7px + 3.5vmin)"
+      cellSelected={!!selected}
+      tabIndex={0}
+      role="application"
+    >
       {[...grid].map(([r, cellProps]) => (
         <Cell
           key={`${r.x},${r.y}`}
+          selected={r.equals(selected)}
           letter={letters ? letters.get(r) : undefined}
           {...{ toggleOnHover, ...lightsProps(r) }}
           {...pick(cellProps, ["r", "light", "clueNumber"])}

@@ -6,6 +6,7 @@ import { Letter } from "../common/Letter";
 
 export type CellProps = RawCellProps & {
   r: Reference;
+  selected?: boolean;
   letter?: Letter;
 };
 
@@ -44,7 +45,11 @@ const RawCell = styled.div<RawCellProps>`
 `;
 
 export const Cell = (props: CellProps) => (
-  <RawCell id={`${props.r.x},${props.r.y}`} {...props}>
+  <RawCell
+    id={`${props.r.x},${props.r.y}`}
+    style={props.selected ? { backgroundColor: "lightskyblue" } : {}}
+    {...props}
+  >
     {props.letter ?? ""}
   </RawCell>
 );
