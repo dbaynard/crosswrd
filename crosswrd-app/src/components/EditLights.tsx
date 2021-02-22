@@ -57,7 +57,10 @@ const EditLights = (props: EditLightsProps) => {
       {...{ toggleOnHover, toggleToggleOnHover }}
       export={<ExportLights {...{ lights, setLights, size }} />}
     >
-      <Grid {...{ size, grid, setLights, letters, toggleOnHover }} />
+      <Grid
+        mode="lights"
+        {...{ size, grid, setLights, letters, toggleOnHover }}
+      />
     </EditLightsLayout>
   );
 };

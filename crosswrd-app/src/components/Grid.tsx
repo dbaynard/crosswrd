@@ -12,6 +12,8 @@ import { StateSetter } from "./Helpers";
 
 export type Grid = OrderedMap<Reference, CellProps>;
 
+export type Mode = "lights";
+
 export const newGrid = (size: bigint): Grid =>
   OrderedMap(
     new Array(Number(size) ** 2).fill(null).map((_, index) => {
@@ -75,6 +77,7 @@ export type GridProps = {
   grid: Grid;
   setLights: StateSetter<Lights | null>;
   letters: Letters | null;
+  mode: Mode;
   toggleOnHover: boolean;
 };
 
