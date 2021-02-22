@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { ClueStarts } from "../common/ClueStarts";
 import { Letters } from "../common/Letter";
 import { Lights, togglingLightPair } from "../common/Lights";
-import { Reference } from "../common/Reference";
+import { Reference, Trajectory, cellTo } from "../common/Reference";
 import { Cell, CellProps } from "./Cell";
 import { StateSetter } from "./Helpers";
 
@@ -71,6 +71,21 @@ const RawGrid = styled.div<RawGridProps>`
     outline: ${(props) => (props.cellSelected ? "none" : "lightskyblue solid")};
   }
 `;
+
+const nextValidCellTo = (
+  grid: Grid,
+  r: Reference,
+  t: Trajectory
+): Reference => {
+  let next = cellTo(1n, r, t);
+  let nextCell = grid.get(next);
+  while (nextCell) {
+    if (nextCell.light) return next;
+    next = cellTo(1n, next, t);
+    nextCell = grid.get(next);
+  }
+  return r;
+};
 
 export type GridProps = {
   size: bigint;
