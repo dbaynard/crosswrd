@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { KeyboardEvent, useState } from "react";
 import { OrderedMap } from "immutable";
 import { pick } from "lodash";
 import styled from "styled-components";
@@ -93,12 +93,20 @@ export type GridProps = {
   setLights: StateSetter<Lights | null>;
   letters: Letters | null;
   mode: Mode;
+  setLetters?: StateSetter<Letters | null>;
   toggleOnHover?: boolean;
 };
 
 export const Grid = (props: GridProps) => {
-  const { setLights, grid, letters, mode, toggleOnHover } = props;
+  const { setLights, grid, letters, mode, setLetters, toggleOnHover } = props;
   const [selected, setSelected] = useState<Reference | null>(null);
+
+  const setLetter = (l: string | null) =>
+    setLetters &&
+    selected &&
+    setLetters((ls) =>
+      l ? (ls ?? OrderedMap()).set(selected, l) : ls?.delete(selected) ?? null
+    );
 
   const toggleCell = (r: Reference) => setLights(togglingLightPair(r));
   const lightsProps = (r: Reference) => ({
@@ -110,6 +118,23 @@ export const Grid = (props: GridProps) => {
     onClick: () => light && setSelected(r),
   });
 
+  const onKeyDown = ({ key, ...rest }: KeyboardEvent) => {
+    const { altKey, ctrlKey, metaKey, shiftKey } = rest;
+    if (altKey || ctrlKey || metaKey) return {};
+    if (key.match(/^[A-Za-z]$/g)) return setLetter(key);
+    if (shiftKey) return {};
+    const arrow = key.match(/^Arrow(Left|Right|Down|Up)$/);
+    if (arrow && selected)
+      return setSelected(
+        nextValidCellTo(grid, selected, arrow[1] as Trajectory)
+      );
+    switch (key) {
+      case "Backspace":
+        setLetter(null);
+        break;
+    }
+  };
+
   return (
     <RawGrid
       size={Number(props.size)}
@@ -118,6 +143,7 @@ export const Grid = (props: GridProps) => {
       tabIndex={0}
       role="application"
       onBlur={() => setSelected(null)}
+      onKeyDown={onKeyDown}
     >
       {[...grid].map(([r, cellProps]) => (
         <Cell
