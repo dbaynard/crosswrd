@@ -12,7 +12,7 @@ import { StateSetter } from "./Helpers";
 
 export type Grid = OrderedMap<Reference, CellProps>;
 
-export type Mode = "lights";
+export type Mode = "lights" | "clues";
 
 export const newGrid = (size: bigint): Grid =>
   OrderedMap(
@@ -78,11 +78,11 @@ export type GridProps = {
   setLights: StateSetter<Lights | null>;
   letters: Letters | null;
   mode: Mode;
-  toggleOnHover: boolean;
+  toggleOnHover?: boolean;
 };
 
 export const Grid = (props: GridProps) => {
-  const { setLights, grid, letters, toggleOnHover } = props;
+  const { setLights, grid, letters, mode, toggleOnHover } = props;
   const [selected] = useState<Reference | null>(null);
 
   const toggleCell = (r: Reference) => setLights(togglingLightPair(r));
@@ -105,8 +105,9 @@ export const Grid = (props: GridProps) => {
           key={`${r.x},${r.y}`}
           selected={r.equals(selected)}
           letter={letters ? letters.get(r) : undefined}
-          {...{ toggleOnHover, ...lightsProps(r) }}
+          {...{ toggleOnHover }}
           {...pick(cellProps, ["r", "light", "clueNumber"])}
+          {...(mode === "lights" ? lightsProps(r) : {})}
         />
       ))}
     </RawGrid>
