@@ -98,13 +98,16 @@ export type GridProps = {
 
 export const Grid = (props: GridProps) => {
   const { setLights, grid, letters, mode, toggleOnHover } = props;
-  const [selected] = useState<Reference | null>(null);
+  const [selected, setSelected] = useState<Reference | null>(null);
 
   const toggleCell = (r: Reference) => setLights(togglingLightPair(r));
   const lightsProps = (r: Reference) => ({
     onClick: () => toggleCell(r),
     onDragEnter: () => toggleCell(r),
     onMouseEnter: () => (toggleOnHover ? toggleCell(r) : {}),
+  });
+  const clueProps = (r: Reference, light: boolean) => ({
+    onClick: () => light && setSelected(r),
   });
 
   return (
@@ -114,6 +117,7 @@ export const Grid = (props: GridProps) => {
       cellSelected={!!selected}
       tabIndex={0}
       role="application"
+      onBlur={() => setSelected(null)}
     >
       {[...grid].map(([r, cellProps]) => (
         <Cell
@@ -122,7 +126,9 @@ export const Grid = (props: GridProps) => {
           letter={letters ? letters.get(r) : undefined}
           {...{ toggleOnHover }}
           {...pick(cellProps, ["r", "light", "clueNumber"])}
-          {...(mode === "lights" ? lightsProps(r) : {})}
+          {...(mode === "lights"
+            ? lightsProps(r)
+            : clueProps(r, cellProps.light))}
         />
       ))}
     </RawGrid>
