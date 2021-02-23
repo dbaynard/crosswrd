@@ -3,7 +3,7 @@ import { OrderedMap } from "immutable";
 
 import { Lights, sortLights } from "./Lights";
 import { popCount } from "./Utils";
-import { Reference, matchingRefs } from "./Reference";
+import { Reference, Trajectory, cellTo, matchingRefs } from "./Reference";
 
 function* spiralSpans() {
   var index = 0n;
@@ -11,6 +11,14 @@ function* spiralSpans() {
     yield 1n + 2n * (index++ / 2n);
   }
 }
+
+const spiralDirection = (r: bigint): Trajectory =>
+  new Map<bigint, Trajectory>([
+    [0n, "Right"],
+    [1n, "Up"],
+    [2n, "Left"],
+    [3n, "Down"],
+  ]).get(r % 4n)!;
 
 function* spiralIndices(end: bigint) {
   var index = 0n;
@@ -20,21 +28,7 @@ function* spiralIndices(end: bigint) {
   var reference = Reference();
   while (c < (end ?? Infinity)) {
     yield reference;
-    const { x, y } = reference;
-    switch (r % 4n) {
-      case 0n:
-        reference = Reference({ x: x + 1n, y });
-        break;
-      case 1n:
-        reference = Reference({ x, y: y + 1n });
-        break;
-      case 2n:
-        reference = Reference({ x: x - 1n, y });
-        break;
-      default:
-        reference = Reference({ x, y: y - 1n });
-        break;
-    }
+    reference = cellTo(1n, reference, spiralDirection(r));
     if (c) {
       c--;
     } else {
@@ -92,19 +86,8 @@ const lightsFromChunks = (chunks: boolean[][]): Lights =>
       const yExp = Number(!(r & 2n));
       const x = (BigInt((-1) ** xExp) * (r + 1n)) / 2n; // start
       const y = (BigInt((-1) ** yExp) * r) / 2n; // end
-      const pos = (ind: number): Reference => {
-        const i = BigInt(ind);
-        switch (r % 4n) {
-          case 0n:
-            return Reference({ x: x + i, y });
-          case 1n:
-            return Reference({ x, y: y + i });
-          case 2n:
-            return Reference({ x: x - i, y });
-          default:
-            return Reference({ x, y: y - i });
-        }
-      };
+      const pos = (ind: number): Reference =>
+        cellTo(BigInt(ind), Reference({ x, y }), spiralDirection(r));
       return c.flatMap((light, i): [Reference, boolean][] =>
         [...matchingRefs(pos(i))].map((p) => [p, light])
       );

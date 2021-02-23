@@ -1,4 +1,5 @@
 import { OrderedMap } from "immutable";
+import { pick } from "lodash";
 import styled from "styled-components";
 
 import { ClueStarts } from "../common/ClueStarts";
@@ -15,7 +16,8 @@ export const newGrid = (size: bigint): Grid =>
       const i = BigInt(index);
       const y = size / 2n - i / size;
       const x = (i % size) - size / 2n;
-      return [Reference({ x, y }), { light: false }];
+      const r = Reference({ x, y });
+      return [r, { r, light: false }];
     })
   );
 
@@ -28,26 +30,14 @@ export const displayGrid = (
   if (!lights) return g;
   const cells = lights
     .filter((_, k) => g.has(k))
-    .map((light) => ({ light } as CellProps));
+    .map((light, r) => ({ r, light } as CellProps));
   if (!clueStarts) return g.merge(cells);
   const numberedCells = cells.merge(
-    clueStarts?.map((p) => ({ light: true, ...p })) ?? (OrderedMap() as Grid)
+    clueStarts?.map((p, r) => ({ r, light: true, ...p })) ??
+      (OrderedMap() as Grid)
   );
   return g.merge(numberedCells);
 };
-
-export const renderCells = (
-  setLights: StateSetter<Lights | null>,
-  grid: Grid,
-  toggleOnHover: boolean
-): JSX.Element[] =>
-  [...grid].map(([r, props]) => (
-    <Cell
-      key={`${r.x},${r.y}`}
-      {...{ ...props, toggleOnHover }}
-      toggleCell={() => setLights(togglingLightPair(r))}
-    />
-  ));
 
 type RawGridProps = {
   size: number;
@@ -76,11 +66,29 @@ const RawGrid = styled.div<RawGridProps>`
 
 export type GridProps = {
   size: bigint;
-  children: JSX.Element[];
+  grid: Grid;
+  setLights: StateSetter<Lights | null>;
+  toggleOnHover: boolean;
 };
 
-export const Grid = ({ size, children }: GridProps) => (
-  <RawGrid size={Number(size)} cellSize="calc(7px + 3.5vmin)">
-    {children}
-  </RawGrid>
-);
+export const Grid = (props: GridProps) => {
+  const { size, grid, setLights, toggleOnHover } = props;
+  const toggleCell = (r: Reference) => setLights(togglingLightPair(r));
+  const lightsProps = (r: Reference) => ({
+    onClick: () => toggleCell(r),
+    onDragEnter: () => toggleCell(r),
+    onMouseEnter: () => (toggleOnHover ? toggleCell(r) : {}),
+  });
+
+  return (
+    <RawGrid size={Number(size)} cellSize="calc(7px + 3.5vmin)">
+      {[...grid].map(([r, cellProps]) => (
+        <Cell
+          key={`${r.x},${r.y}`}
+          {...{ toggleOnHover, ...lightsProps(r) }}
+          {...pick(cellProps, ["r", "light", "clueNumber"])}
+        />
+      ))}
+    </RawGrid>
+  );
+};

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { startCase } from "lodash";
 import { Button, Tabs, Tab } from "react-bootstrap";
 import { BrowserRouter as Router, useHistory } from "react-router-dom";
@@ -8,8 +8,11 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 import "./App.css";
 
+import { ClueStarts } from "../common/ClueStarts";
+import { Lights } from "../common/Lights";
 import { EditLights } from "./EditLights";
 import { StateSetter } from "./Helpers";
+import { Grid, displayGrid } from "./Grid";
 
 type HomeProps = { name: string };
 
@@ -40,13 +43,21 @@ const useRouterLocation = (): [string, StateSetter<string>] => {
 const Tabbed = ({ name }: HomeProps) => {
   const [key, setKey] = useRouterLocation();
 
+  const size = 15n;
+  const [lights, setLights] = useState<Lights | null>(null);
+  const [clueStarts, setClueStarts] = useState<ClueStarts | null>(null);
+
+  const grid = useMemo<Grid>(() => {
+    return displayGrid(size, lights, clueStarts);
+  }, [size, lights, clueStarts]);
+
   return (
     <Tabs activeKey={key} onSelect={(k) => setKey(k ?? "/")}>
       <Tab eventKey="/" title="Home">
         <Home {...{ name }} />
       </Tab>
       <Tab eventKey="/lights" title="Edit Lights">
-        <EditLights />
+        <EditLights {...{ size, lights, setLights, grid, setClueStarts }} />
       </Tab>
     </Tabs>
   );

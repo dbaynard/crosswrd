@@ -3,75 +3,60 @@ import { Container } from "react-bootstrap";
 
 import { Lights } from "../common/Lights";
 import { ClueStarts, findClueStarts } from "../common/ClueStarts";
-import { Grid, displayGrid, renderCells } from "./Grid";
+import { Grid } from "./Grid";
 import { WrappedRow, StateSetter, ToggleButton } from "./Helpers";
 import { ExportLights } from "./ExportLights";
 
 type EditLightsLayoutProps = {
-  size: bigint;
-  lights: Lights | null;
-  setLights: StateSetter<Lights | null>;
-  clueStarts: ClueStarts | null;
   toggleOnHover: boolean;
   toggleToggleOnHover: () => void;
+  children: JSX.Element;
+  export: JSX.Element;
 };
-const EditLightsLayout = ({
-  size,
-  lights,
-  setLights,
-  clueStarts,
-  toggleOnHover,
-  toggleToggleOnHover,
-}: EditLightsLayoutProps) => (
+const EditLightsLayout = (props: EditLightsLayoutProps) => (
   <Container>
     <WrappedRow>
       <header>
         <h1>Edit lights</h1>
       </header>
     </WrappedRow>
+    <WrappedRow>{props.children}</WrappedRow>
     <WrappedRow>
-      <Grid {...{ size }}>
-        {renderCells(
-          setLights,
-          displayGrid(size, lights, clueStarts),
-          toggleOnHover
-        )}
-      </Grid>
-    </WrappedRow>
-    <WrappedRow>
-      <ToggleButton value={toggleOnHover} toggle={toggleToggleOnHover}>
+      <ToggleButton
+        value={props.toggleOnHover}
+        toggle={props.toggleToggleOnHover}
+      >
         Toggle on hover
       </ToggleButton>
     </WrappedRow>
-    <WrappedRow>
-      <ExportLights {...{ lights, setLights, size }} />
-    </WrappedRow>
+    <WrappedRow>{props.export}</WrappedRow>
   </Container>
 );
 
-const EditLights = () => {
-  const size = 15n;
-  const [lights, setLights] = useState<Lights | null>(null);
-  const [clueStarts, setClueStarts] = useState<ClueStarts | null>(null);
+type EditLightsProps = {
+  size: bigint;
+  lights: Lights | null;
+  grid: Grid;
+  setLights: StateSetter<Lights | null>;
+  setClueStarts: StateSetter<ClueStarts | null>;
+};
+
+const EditLights = (props: EditLightsProps) => {
+  const { size, lights, grid, setLights, setClueStarts } = props;
 
   useEffect(() => {
     setClueStarts(lights && findClueStarts(lights, size));
-  }, [lights, size]);
+  }, [setClueStarts, lights, size]);
 
   const [toggleOnHover, setToggleOnHover] = useState<boolean>(false);
   const toggleToggleOnHover = () => setToggleOnHover((x) => !x);
-
   return (
     <EditLightsLayout
-      {...{
-        size,
-        lights,
-        setLights,
-        clueStarts,
-        toggleOnHover,
-        toggleToggleOnHover,
-      }}
-    />
+      {...{ toggleOnHover, toggleToggleOnHover }}
+      export={<ExportLights {...{ lights, setLights, size }} />}
+    >
+      <Grid {...{ size, grid, setLights, toggleOnHover }} />
+    </EditLightsLayout>
   );
 };
 
