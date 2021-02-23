@@ -1,4 +1,3 @@
-import { pick } from "lodash";
 import styled from "styled-components";
 
 import { Reference } from "../common/Reference";
