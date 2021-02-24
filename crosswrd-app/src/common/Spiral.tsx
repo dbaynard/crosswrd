@@ -6,7 +6,7 @@ import { popCount } from "./Utils";
 import { Reference, Trajectory, cellTo, matchingRefs } from "./Reference";
 
 function* spiralSpans() {
-  var index = 0n;
+  let index = 0n;
   while (true) {
     yield 1n + 2n * (index++ / 2n);
   }
@@ -21,11 +21,11 @@ const spiralDirection = (r: bigint): Trajectory =>
   ]).get(r % 4n)!;
 
 function* spiralIndices(end: bigint) {
-  var index = 0n;
-  var r = 0n;
+  let index = 0n;
+  let r = 0n;
   const chunks = spiralSpans();
-  var c = (chunks.next().value || 1n) - 1n;
-  var reference = Reference();
+  let c = (chunks.next().value || 1n) - 1n;
+  let reference = Reference();
   while (c < (end ?? Infinity)) {
     yield reference;
     reference = cellTo(1n, reference, spiralDirection(r));
@@ -70,7 +70,7 @@ const gridLightsFromString = (s: string): GridLights | null =>
 const chunksFromLights = (gs: GridLights): boolean[][] => {
   const chunkSizes = spiralSpans();
   const chunks = [];
-  var pos = 0;
+  let pos = 0;
   for (const size of chunkSizes) {
     if (pos > gs.length) break;
     chunks.push(gs.slice(pos, (pos += Number(size))));
