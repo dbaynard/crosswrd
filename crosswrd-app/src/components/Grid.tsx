@@ -132,6 +132,15 @@ export const Grid = (props: GridProps) => {
       case "Backspace":
         setLetter(null);
         break;
+      case "Home":
+        setSelected(grid.first(null)?.r ?? null);
+        break;
+      case "End":
+        setSelected(grid.last(null)?.r ?? null);
+        break;
+      case "Escape":
+        setSelected(null);
+        break;
     }
   };
 
