@@ -2,23 +2,13 @@ import { OrderedMap, Set } from "immutable";
 import { curry } from "lodash";
 
 import { Lights } from "./Lights";
-import { Reference, cellTo } from "./Reference";
+import { Reference } from "./Reference";
 import { Tack } from "./Tack";
+import { neighbourhood } from "./Utils";
 
 export type ClueStart = { clueNumber: bigint; tacks: Set<Tack> };
 
 export type ClueStarts = OrderedMap<Reference, ClueStart>;
-
-const experiment = (f: (_: Reference) => Reference[]) => <V,>(
-  w: OrderedMap<Reference, V | null>
-) => (r: Reference): (V | null)[] => f(r).map((x) => w.get(x, null));
-
-const neighbourhood = experiment((r) => [
-  cellTo(1n, r, "Left"),
-  cellTo(1n, r, "Up"),
-  cellTo(1n, r, "Right"),
-  cellTo(1n, r, "Down"),
-]);
 
 const clueStart = (
   neighbours: (_: Reference) => (boolean | null)[],
