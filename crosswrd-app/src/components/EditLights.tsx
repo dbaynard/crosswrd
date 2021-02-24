@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Container } from "react-bootstrap";
 
+import { Letters } from "../common/Letter";
 import { Lights } from "../common/Lights";
 import { ClueStarts, findClueStarts } from "../common/ClueStarts";
 import { Grid } from "./Grid";
@@ -39,10 +40,11 @@ type EditLightsProps = {
   grid: Grid;
   setLights: StateSetter<Lights | null>;
   setClueStarts: StateSetter<ClueStarts | null>;
+  letters: Letters | null;
 };
 
 const EditLights = (props: EditLightsProps) => {
-  const { size, lights, grid, setLights, setClueStarts } = props;
+  const { size, lights, grid, setLights, letters, setClueStarts } = props;
 
   useEffect(() => {
     setClueStarts(lights && findClueStarts(lights, size));
@@ -55,7 +57,10 @@ const EditLights = (props: EditLightsProps) => {
       {...{ toggleOnHover, toggleToggleOnHover }}
       export={<ExportLights {...{ lights, setLights, size }} />}
     >
-      <Grid {...{ size, grid, setLights, toggleOnHover }} />
+      <Grid
+        mode="lights"
+        {...{ size, grid, setLights, letters, toggleOnHover }}
+      />
     </EditLightsLayout>
   );
 };

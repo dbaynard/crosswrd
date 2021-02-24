@@ -1,14 +1,18 @@
+import { KeyboardEvent, useState } from "react";
 import { OrderedMap } from "immutable";
 import { pick } from "lodash";
 import styled from "styled-components";
 
 import { ClueStarts } from "../common/ClueStarts";
+import { Letters } from "../common/Letter";
 import { Lights, togglingLightPair } from "../common/Lights";
-import { Reference } from "../common/Reference";
+import { Reference, Trajectory, cellTo } from "../common/Reference";
 import { Cell, CellProps } from "./Cell";
 import { StateSetter } from "./Helpers";
 
 export type Grid = OrderedMap<Reference, CellProps>;
+
+export type Mode = "lights" | "clues";
 
 export const newGrid = (size: bigint): Grid =>
   OrderedMap(
@@ -42,6 +46,7 @@ export const displayGrid = (
 type RawGridProps = {
   size: number;
   cellSize: string;
+  cellSelected: boolean;
 };
 
 const RawGrid = styled.div<RawGridProps>`
@@ -62,31 +67,103 @@ const RawGrid = styled.div<RawGridProps>`
   column-gap: calc(0.6px + 0.05vmin);
   row-gap: calc(0.6px + 0.05vmin);
   margin: auto;
+  &:focus {
+    outline: ${(props) => (props.cellSelected ? "none" : "lightskyblue solid")};
+  }
 `;
+
+const nextValidCellTo = (
+  grid: Grid,
+  r: Reference,
+  t: Trajectory
+): Reference => {
+  let next = cellTo(1n, r, t);
+  let nextCell = grid.get(next);
+  while (nextCell) {
+    if (nextCell.light) return next;
+    next = cellTo(1n, next, t);
+    nextCell = grid.get(next);
+  }
+  return r;
+};
 
 export type GridProps = {
   size: bigint;
   grid: Grid;
   setLights: StateSetter<Lights | null>;
-  toggleOnHover: boolean;
+  letters: Letters | null;
+  mode: Mode;
+  setLetters?: StateSetter<Letters | null>;
+  toggleOnHover?: boolean;
 };
 
 export const Grid = (props: GridProps) => {
-  const { size, grid, setLights, toggleOnHover } = props;
+  const { setLights, grid, letters, mode, setLetters, toggleOnHover } = props;
+  const [selected, setSelected] = useState<Reference | null>(null);
+
+  const setLetter = (l: string | null) =>
+    setLetters &&
+    selected &&
+    setLetters((ls) =>
+      l ? (ls ?? OrderedMap()).set(selected, l) : ls?.delete(selected) ?? null
+    );
+
   const toggleCell = (r: Reference) => setLights(togglingLightPair(r));
   const lightsProps = (r: Reference) => ({
     onClick: () => toggleCell(r),
     onDragEnter: () => toggleCell(r),
     onMouseEnter: () => (toggleOnHover ? toggleCell(r) : {}),
   });
+  const clueProps = (r: Reference, light: boolean) => ({
+    onClick: () => light && setSelected(r),
+  });
+
+  const onKeyDown = ({ key, ...rest }: KeyboardEvent) => {
+    const { altKey, ctrlKey, metaKey, shiftKey } = rest;
+    if (altKey || ctrlKey || metaKey) return {};
+    if (key.match(/^[A-Za-z]$/g)) return setLetter(key);
+    if (shiftKey) return {};
+    const arrow = key.match(/^Arrow(Left|Right|Down|Up)$/);
+    if (arrow && selected)
+      return setSelected(
+        nextValidCellTo(grid, selected, arrow[1] as Trajectory)
+      );
+    switch (key) {
+      case "Backspace":
+        setLetter(null);
+        break;
+      case "Home":
+        setSelected(grid.first(null)?.r ?? null);
+        break;
+      case "End":
+        setSelected(grid.last(null)?.r ?? null);
+        break;
+      case "Escape":
+        setSelected(null);
+        break;
+    }
+  };
 
   return (
-    <RawGrid size={Number(size)} cellSize="calc(7px + 3.5vmin)">
+    <RawGrid
+      size={Number(props.size)}
+      cellSize="calc(7px + 3.5vmin)"
+      cellSelected={!!selected}
+      tabIndex={0}
+      role="application"
+      onBlur={() => setSelected(null)}
+      onKeyDown={onKeyDown}
+    >
       {[...grid].map(([r, cellProps]) => (
         <Cell
           key={`${r.x},${r.y}`}
-          {...{ toggleOnHover, ...lightsProps(r) }}
+          selected={r.equals(selected)}
+          letter={letters ? letters.get(r) : undefined}
+          {...{ toggleOnHover }}
           {...pick(cellProps, ["r", "light", "clueNumber"])}
+          {...(mode === "lights"
+            ? lightsProps(r)
+            : clueProps(r, cellProps.light))}
         />
       ))}
     </RawGrid>
