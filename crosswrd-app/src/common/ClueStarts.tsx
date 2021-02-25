@@ -1,4 +1,5 @@
 import { OrderedMap, Set } from "immutable";
+import { curry } from "lodash";
 
 import { Lights } from "./Lights";
 import { Reference, cellTo } from "./Reference";
@@ -20,7 +21,8 @@ const neighbourhood = experiment((r) => [
   cellTo(1n, r, "Down"),
 ]);
 
-const clueStart = (neighbours: (_: Reference) => (boolean | null)[]) => (
+const clueStart = (
+  neighbours: (_: Reference) => (boolean | null)[],
   acc: [bigint, ClueStarts],
   v: boolean,
   r: Reference
@@ -41,7 +43,7 @@ const inGrid = (size: bigint) => (_: unknown, r: Reference): boolean =>
 export const findClueStarts = (lights: Lights, size: bigint): ClueStarts => {
   const grid = lights.filter(inGrid(size));
   const neighbours = neighbourhood(grid);
-  return grid.reduce(clueStart(neighbours), [
+  return grid.reduce(curry(clueStart)(neighbours), [
     1n,
     OrderedMap() as ClueStarts,
   ])[1];
