@@ -1,5 +1,6 @@
 import { Button, Container } from "react-bootstrap";
 
+import { Transits } from "../common/Transits";
 import { Letters } from "../common/Letter";
 import { Lights } from "../common/Lights";
 import { Grid } from "./Grid";
@@ -11,6 +12,8 @@ type EditCluesProps = {
   setLights: StateSetter<Lights | null>;
   letters: Letters | null;
   setLetters: StateSetter<Letters | null>;
+  transits: Transits | null;
+  setTransits: StateSetter<Transits | null>;
 };
 
 const EditClues = (props: EditCluesProps) => (

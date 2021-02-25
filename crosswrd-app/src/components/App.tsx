@@ -11,6 +11,8 @@ import "./App.css";
 import { ClueStarts } from "../common/ClueStarts";
 import { Lights } from "../common/Lights";
 import { Letters } from "../common/Letter";
+import { Transits } from "../common/Transits";
+
 import { EditClues } from "./EditClues";
 import { EditLights } from "./EditLights";
 import { StateSetter } from "./Helpers";
@@ -54,9 +56,11 @@ const Tabbed = ({ name }: HomeProps) => {
     return displayGrid(size, lights, clueStarts);
   }, [size, lights, clueStarts]);
 
+  const [transits, setTransits] = useState<Transits | null>(null);
+
   const commonProps = { size, lights, setLights, grid, letters };
-  const lightsProps = { lights, setClueStarts };
-  const cluesProps = { setLetters };
+  const lightsProps = { setClueStarts };
+  const cluesProps = { setLetters, transits, setTransits };
 
   return (
     <Tabs activeKey={key} onSelect={(k) => setKey(k ?? "/")}>
