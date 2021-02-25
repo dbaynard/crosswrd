@@ -60,7 +60,7 @@ const Tabbed = ({ name }: HomeProps) => {
 
   const commonProps = { size, lights, setLights, grid, letters };
   const lightsProps = { setClueStarts };
-  const cluesProps = { setLetters, transits, setTransits };
+  const cluesProps = { setLetters, clueStarts, transits, setTransits };
 
   return (
     <Tabs activeKey={key} onSelect={(k) => setKey(k ?? "/")}>
