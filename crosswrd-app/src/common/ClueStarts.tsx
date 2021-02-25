@@ -2,7 +2,7 @@ import { OrderedMap, Set } from "immutable";
 import { curry } from "lodash";
 
 import { Lights } from "./Lights";
-import { Reference } from "./Reference";
+import { Reference, inGrid } from "./Reference";
 import { Tack } from "./Tack";
 import { neighbourhood } from "./Utils";
 
@@ -25,9 +25,6 @@ const clueStart = (
   const [i, cs] = acc;
   return [i + 1n, cs.set(r, { clueNumber: i, tacks })];
 };
-
-const inGrid = (size: bigint) => (_: unknown, r: Reference): boolean =>
-  [r.x, r.y].every((z) => Math.abs(Number(z)) <= size / 2n);
 
 export const findClueStarts = (lights: Lights, size: bigint): ClueStarts => {
   const grid = lights.filter(inGrid(size));
