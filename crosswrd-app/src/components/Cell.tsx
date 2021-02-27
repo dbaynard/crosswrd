@@ -1,4 +1,3 @@
-import { pick } from "lodash";
 import styled from "styled-components";
 
 import { Reference } from "../common/Reference";
@@ -8,11 +7,11 @@ export type CellProps = RawCellProps & {
   r: Reference;
   selected?: boolean;
   letter?: Letter;
+  clueNumber?: bigint;
 };
 
 type RawCellProps = {
   light: boolean;
-  clueNumber?: bigint;
 };
 
 const RawCell = styled.div<RawCellProps>`
@@ -29,7 +28,7 @@ const RawCell = styled.div<RawCellProps>`
   }
   position: relative;
   &::before {
-    content: "${(props) => props.clueNumber?.toString() ?? ""}";
+    content: attr(data-clue-number);
     z-index: 1;
     position: absolute;
     left: 0;
@@ -47,6 +46,7 @@ const RawCell = styled.div<RawCellProps>`
 export const Cell = (props: CellProps) => (
   <RawCell
     id={`${props.r.x},${props.r.y}`}
+    data-clue-number={props.clueNumber}
     style={props.selected ? { backgroundColor: "lightskyblue" } : {}}
     {...props}
   >
