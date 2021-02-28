@@ -189,6 +189,7 @@ export const Grid = (props: GridProps) => {
         <Cell
           key={`${r.x},${r.y}`}
           selected={r.equals(selected)}
+          inSelectedClue={selectedClueSpan?.has(r) ?? false}
           letter={letters ? letters.get(r) : undefined}
           {...{ toggleOnHover }}
           {...pick(cellProps, ["r", "light", "clueNumber"])}
