@@ -3,6 +3,7 @@ import { OrderedMap, OrderedSet, Seq } from "immutable";
 import { pick } from "lodash";
 import styled from "styled-components";
 
+import { ClueId, ClueSpans } from "../common/ClueSpans";
 import { ClueStarts } from "../common/ClueStarts";
 import { Letters } from "../common/Letter";
 import { Lights, togglingLightPair } from "../common/Lights";
@@ -99,6 +100,7 @@ export type GridProps = {
   setLetters?: StateSetter<Letters | null>;
   toggleOnHover?: boolean;
   transits?: Transits | null;
+  clueSpans?: ClueSpans | null;
 };
 
 export const Grid = (props: GridProps) => {
@@ -106,7 +108,7 @@ export const Grid = (props: GridProps) => {
   const [selected, setSelected] = useState<Reference | null>(null);
   const [tack, setTack] = useState<Tack | null>(null);
 
-  const { transits } = props;
+  const { transits, clueSpans } = props;
   const selectedTransits = selected && transits && transits.get(selected);
   const tacks =
     selectedTransits &&
@@ -120,6 +122,15 @@ export const Grid = (props: GridProps) => {
       ? setTack((t) => (t && tacks?.has(t) && t) || tacks?.first() || null)
       : setTack(null);
   }, [selected, tacks]);
+
+  const selectedClueSpan =
+    selectedTransits &&
+    clueSpans &&
+    (Seq.Keyed(selectedTransits)
+      .filter((n, t) => !!n && t === tack)
+      .map((n, t) => clueSpans.get(new ClueId(n!, t as Tack))!)
+      .toSetSeq()
+      .flatten() as OrderedSet<Reference>);
 
   const setLetter = (l: string | null) =>
     setLetters &&
