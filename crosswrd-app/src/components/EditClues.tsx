@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Button, Container } from "react-bootstrap";
 
-import { ClueSpans } from "../common/ClueSpans";
+import { ClueSpans, findClueSpans } from "../common/ClueSpans";
 import { ClueStarts } from "../common/ClueStarts";
 import { Letters } from "../common/Letter";
 import { Lights } from "../common/Lights";
@@ -25,11 +25,16 @@ type EditCluesProps = {
 };
 
 const EditClues = (props: EditCluesProps) => {
-  const { setTransits, lights, clueStarts, size } = props;
+  const { transits, setTransits, setClueSpans } = props;
+  const { lights, clueStarts, size } = props;
 
   useEffect(() => {
     lights && clueStarts && setTransits(findTransits(lights, clueStarts, size));
   }, [setTransits, lights, clueStarts, size]);
+
+  useEffect(() => {
+    transits && setClueSpans(findClueSpans(transits));
+  }, [transits, setClueSpans]);
 
   return (
     <Container>
