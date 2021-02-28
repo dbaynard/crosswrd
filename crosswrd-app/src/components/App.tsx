@@ -35,9 +35,9 @@ const useRouterLocation = (): [string, StateSetter<string>] => {
     if (history.location.pathname !== key) history.push(key);
   }, [history, key]);
 
-  useEffect(() => history.listen((location) => setKey(location.pathname)), [
-    history,
-  ]);
+  useEffect(() => {
+    history.listen((location) => setKey(location.pathname));
+  }, [history]);
 
   return [key, setKey];
 };
