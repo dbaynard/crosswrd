@@ -3,8 +3,7 @@ import { curry } from "lodash";
 
 import { Lights } from "./Lights";
 import { Reference, cellTo } from "./Reference";
-
-export type Tack = "A" | "D";
+import { Tack } from "./Tack";
 
 export type ClueStart = { clueNumber: bigint; tacks: Set<Tack> };
 
