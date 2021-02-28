@@ -54,18 +54,20 @@ const Tabbed = ({ name }: HomeProps) => {
     return displayGrid(size, lights, clueStarts);
   }, [size, lights, clueStarts]);
 
+  const commonProps = { size, lights, setLights, grid, letters };
+  const lightsProps = { lights, setClueStarts };
+  const cluesProps = { setLetters };
+
   return (
     <Tabs activeKey={key} onSelect={(k) => setKey(k ?? "/")}>
       <Tab eventKey="/" title="Home">
         <Home {...{ name }} />
       </Tab>
       <Tab eventKey="/lights" title="Edit Lights">
-        <EditLights
-          {...{ size, lights, setLights, grid, setClueStarts, letters }}
-        />
+        <EditLights {...commonProps} {...lightsProps} />
       </Tab>
       <Tab eventKey="/clues" title="Edit Clues">
-        <EditClues {...{ size, grid, setLights, letters, setLetters }} />
+        <EditClues {...commonProps} {...cluesProps} />
       </Tab>
     </Tabs>
   );
