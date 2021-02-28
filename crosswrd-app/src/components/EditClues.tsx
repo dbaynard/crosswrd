@@ -1,4 +1,4 @@
-import { Container } from "react-bootstrap";
+import { Button, Container } from "react-bootstrap";
 
 import { Letters } from "../common/Letter";
 import { Lights } from "../common/Lights";
@@ -22,6 +22,16 @@ const EditClues = (props: EditCluesProps) => (
     </WrappedRow>
     <WrappedRow>
       <Grid mode="clues" {...props} />
+    </WrappedRow>
+    <WrappedRow>
+      <Button
+        id="edit-clues-reset-button"
+        variant="outline-primary"
+        title="Reset"
+        onClick={() => props.setLetters(null)}
+      >
+        Reset
+      </Button>
     </WrappedRow>
   </Container>
 );
