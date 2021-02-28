@@ -8,6 +8,7 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 import "./App.css";
 
+import { ClueSpans } from "../common/ClueSpans";
 import { ClueStarts } from "../common/ClueStarts";
 import { Lights } from "../common/Lights";
 import { Letters } from "../common/Letter";
@@ -57,10 +58,12 @@ const Tabbed = ({ name }: HomeProps) => {
   }, [size, lights, clueStarts]);
 
   const [transits, setTransits] = useState<Transits | null>(null);
+  const [clueSpans, setClueSpans] = useState<ClueSpans | null>(null);
 
   const commonProps = { size, lights, setLights, grid, letters };
   const lightsProps = { setClueStarts };
-  const cluesProps = { setLetters, clueStarts, transits, setTransits };
+  const cluesProps = { setLetters, clueStarts };
+  const transitProps = { transits, setTransits, clueSpans, setClueSpans };
 
   return (
     <Tabs activeKey={key} onSelect={(k) => setKey(k ?? "/")}>
@@ -71,7 +74,7 @@ const Tabbed = ({ name }: HomeProps) => {
         <EditLights {...commonProps} {...lightsProps} />
       </Tab>
       <Tab eventKey="/clues" title="Edit Clues">
-        <EditClues {...commonProps} {...cluesProps} />
+        <EditClues {...{ ...commonProps, ...cluesProps, ...transitProps }} />
       </Tab>
     </Tabs>
   );
