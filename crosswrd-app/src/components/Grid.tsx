@@ -1,5 +1,5 @@
-import { KeyboardEvent, useState } from "react";
-import { OrderedMap } from "immutable";
+import { KeyboardEvent, useEffect, useState } from "react";
+import { OrderedMap, OrderedSet, Seq } from "immutable";
 import { pick } from "lodash";
 import styled from "styled-components";
 
@@ -7,6 +7,9 @@ import { ClueStarts } from "../common/ClueStarts";
 import { Letters } from "../common/Letter";
 import { Lights, togglingLightPair } from "../common/Lights";
 import { Reference, Trajectory, cellTo } from "../common/Reference";
+import { Tack } from "../common/Tack";
+import { Transits } from "../common/Transits";
+
 import { Cell, CellProps } from "./Cell";
 import { StateSetter } from "./Helpers";
 
@@ -95,11 +98,28 @@ export type GridProps = {
   mode: Mode;
   setLetters?: StateSetter<Letters | null>;
   toggleOnHover?: boolean;
+  transits?: Transits | null;
 };
 
 export const Grid = (props: GridProps) => {
   const { setLights, grid, letters, mode, setLetters, toggleOnHover } = props;
   const [selected, setSelected] = useState<Reference | null>(null);
+  const [tack, setTack] = useState<Tack | null>(null);
+
+  const { transits } = props;
+  const selectedTransits = selected && transits && transits.get(selected);
+  const tacks =
+    selectedTransits &&
+    (Seq.Keyed(selectedTransits)
+      .filter((n) => !!n)
+      .keySeq()
+      .toOrderedSet() as OrderedSet<Tack>);
+
+  useEffect(() => {
+    selected
+      ? setTack((t) => (t && tacks?.has(t) && t) || tacks?.first() || null)
+      : setTack(null);
+  }, [selected, tacks]);
 
   const setLetter = (l: string | null) =>
     setLetters &&
