@@ -140,6 +140,8 @@ export const Grid = (props: GridProps) => {
     );
   const toggleTack = () =>
     setTack((t) => (t && tacks?.size === 2 ? turn(t) : t));
+  const selectOrToggleTack = (r: Reference) =>
+    r.equals(selected) ? toggleTack() : setSelected(r);
 
   const toggleCell = (r: Reference) => setLights(togglingLightPair(r));
   const lightsProps = (r: Reference) => ({
@@ -148,7 +150,7 @@ export const Grid = (props: GridProps) => {
     onMouseEnter: () => (toggleOnHover ? toggleCell(r) : {}),
   });
   const clueProps = (r: Reference, light: boolean) => ({
-    onClick: () => light && setSelected(r),
+    onClick: () => light && selectOrToggleTack(r),
   });
 
   const onKeyDown = ({ key, ...rest }: KeyboardEvent) => {
