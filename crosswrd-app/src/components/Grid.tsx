@@ -91,6 +91,15 @@ const nextValidCellTo = (
   return r;
 };
 
+const nextClueCellTo = (
+  rs: OrderedSet<Reference>,
+  r: Reference,
+  t: Trajectory
+): Reference => {
+  let next = cellTo(1n, r, t);
+  return rs.has(next) ? next : r;
+};
+
 export type GridProps = {
   size: bigint;
   grid: Grid;
@@ -138,6 +147,9 @@ export const Grid = (props: GridProps) => {
     setLetters((ls) =>
       l ? (ls ?? OrderedMap()).set(selected, l) : ls?.delete(selected) ?? null
     );
+  const moveSelected = (t: Trajectory) =>
+    selectedClueSpan &&
+    setSelected((s) => s && nextClueCellTo(selectedClueSpan, s, t));
   const toggleTack = () =>
     setTack((t) => (t && tacks?.size === 2 ? turn(t) : t));
   const selectOrToggleTack = (r: Reference) =>
@@ -156,7 +168,10 @@ export const Grid = (props: GridProps) => {
   const onKeyDown = ({ key, ...rest }: KeyboardEvent) => {
     const { altKey, ctrlKey, metaKey, shiftKey } = rest;
     if (altKey || ctrlKey || metaKey) return {};
-    if (key.match(/^[A-Za-z]$/g)) return setLetter(key);
+    if (key.match(/^[A-Za-z]$/g)) {
+      setLetter(key);
+      return moveSelected(tack === "A" ? "Right" : "Down");
+    }
     if (shiftKey) return {};
     const arrow = key.match(/^Arrow(Left|Right|Down|Up)$/);
     if (arrow && selected)
@@ -169,6 +184,7 @@ export const Grid = (props: GridProps) => {
         break;
       case "Backspace":
         setLetter(null);
+        moveSelected(tack === "A" ? "Left" : "Up");
         break;
       case "Home":
         setSelected(grid.first(null)?.r ?? null);
