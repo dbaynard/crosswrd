@@ -182,6 +182,10 @@ export const Grid = (props: GridProps) => {
       case "Enter":
         toggleTack();
         break;
+      case " ":
+        setLetter(null);
+        moveSelected(tack === "A" ? "Right" : "Down");
+        break;
       case "Backspace":
         setLetter(null);
         moveSelected(tack === "A" ? "Left" : "Up");
