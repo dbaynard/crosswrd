@@ -8,7 +8,7 @@ import { ClueStarts } from "../common/ClueStarts";
 import { Letters } from "../common/Letter";
 import { Lights, togglingLightPair } from "../common/Lights";
 import { Reference, Trajectory, cellTo } from "../common/Reference";
-import { Tack } from "../common/Tack";
+import { Tack, turn } from "../common/Tack";
 import { Transits } from "../common/Transits";
 
 import { Cell, CellProps } from "./Cell";
@@ -138,6 +138,8 @@ export const Grid = (props: GridProps) => {
     setLetters((ls) =>
       l ? (ls ?? OrderedMap()).set(selected, l) : ls?.delete(selected) ?? null
     );
+  const toggleTack = () =>
+    setTack((t) => (t && tacks?.size === 2 ? turn(t) : t));
 
   const toggleCell = (r: Reference) => setLights(togglingLightPair(r));
   const lightsProps = (r: Reference) => ({
@@ -160,6 +162,9 @@ export const Grid = (props: GridProps) => {
         nextValidCellTo(grid, selected, arrow[1] as Trajectory)
       );
     switch (key) {
+      case "Enter":
+        toggleTack();
+        break;
       case "Backspace":
         setLetter(null);
         break;
