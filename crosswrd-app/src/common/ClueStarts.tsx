@@ -1,26 +1,17 @@
 import { OrderedMap, Set } from "immutable";
+import { curry } from "lodash";
 
 import { Lights } from "./Lights";
-import { Reference, cellTo } from "./Reference";
-
-export type Tack = "A" | "D";
+import { Reference, inGrid } from "./Reference";
+import { Tack } from "./Tack";
+import { neighbourhood } from "./Utils";
 
 export type ClueStart = { clueNumber: bigint; tacks: Set<Tack> };
 
 export type ClueStarts = OrderedMap<Reference, ClueStart>;
 
-const experiment = (f: (_: Reference) => Reference[]) => <V,>(
-  w: OrderedMap<Reference, V | null>
-) => (r: Reference): (V | null)[] => f(r).map((x) => w.get(x, null));
-
-const neighbourhood = experiment((r) => [
-  cellTo(1n, r, "Left"),
-  cellTo(1n, r, "Up"),
-  cellTo(1n, r, "Right"),
-  cellTo(1n, r, "Down"),
-]);
-
-const clueStart = (neighbours: (_: Reference) => (boolean | null)[]) => (
+const clueStart = (
+  neighbours: (_: Reference) => (boolean | null)[],
   acc: [bigint, ClueStarts],
   v: boolean,
   r: Reference
@@ -35,13 +26,10 @@ const clueStart = (neighbours: (_: Reference) => (boolean | null)[]) => (
   return [i + 1n, cs.set(r, { clueNumber: i, tacks })];
 };
 
-const inGrid = (size: bigint) => (_: unknown, r: Reference): boolean =>
-  [r.x, r.y].every((z) => Math.abs(Number(z)) <= size / 2n);
-
 export const findClueStarts = (lights: Lights, size: bigint): ClueStarts => {
   const grid = lights.filter(inGrid(size));
   const neighbours = neighbourhood(grid);
-  return grid.reduce(clueStart(neighbours), [
+  return grid.reduce(curry(clueStart)(neighbours), [
     1n,
     OrderedMap() as ClueStarts,
   ])[1];

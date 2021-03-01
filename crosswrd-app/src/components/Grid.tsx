@@ -1,12 +1,16 @@
-import { KeyboardEvent, useState } from "react";
-import { OrderedMap } from "immutable";
+import { KeyboardEvent, useEffect, useState } from "react";
+import { OrderedMap, OrderedSet, Seq } from "immutable";
 import { pick } from "lodash";
 import styled from "styled-components";
 
+import { ClueId, ClueSpans } from "../common/ClueSpans";
 import { ClueStarts } from "../common/ClueStarts";
 import { Letters } from "../common/Letter";
 import { Lights, togglingLightPair } from "../common/Lights";
 import { Reference, Trajectory, cellTo } from "../common/Reference";
+import { Tack, turn } from "../common/Tack";
+import { Transits } from "../common/Transits";
+
 import { Cell, CellProps } from "./Cell";
 import { StateSetter } from "./Helpers";
 
@@ -87,6 +91,15 @@ const nextValidCellTo = (
   return r;
 };
 
+const nextClueCellTo = (
+  rs: OrderedSet<Reference>,
+  r: Reference,
+  t: Trajectory
+): Reference => {
+  let next = cellTo(1n, r, t);
+  return rs.has(next) ? next : r;
+};
+
 export type GridProps = {
   size: bigint;
   grid: Grid;
@@ -95,11 +108,38 @@ export type GridProps = {
   mode: Mode;
   setLetters?: StateSetter<Letters | null>;
   toggleOnHover?: boolean;
+  transits?: Transits | null;
+  clueSpans?: ClueSpans | null;
 };
 
 export const Grid = (props: GridProps) => {
   const { setLights, grid, letters, mode, setLetters, toggleOnHover } = props;
   const [selected, setSelected] = useState<Reference | null>(null);
+  const [tack, setTack] = useState<Tack | null>(null);
+
+  const { transits, clueSpans } = props;
+  const selectedTransits = selected && transits && transits.get(selected);
+  const tacks =
+    selectedTransits &&
+    (Seq.Keyed(selectedTransits)
+      .filter((n) => !!n)
+      .keySeq()
+      .toOrderedSet() as OrderedSet<Tack>);
+
+  useEffect(() => {
+    selected
+      ? setTack((t) => (t && tacks?.has(t) && t) || tacks?.first() || null)
+      : setTack(null);
+  }, [selected, tacks]);
+
+  const selectedClueSpan =
+    selectedTransits &&
+    clueSpans &&
+    (Seq.Keyed(selectedTransits)
+      .filter((n, t) => !!n && t === tack)
+      .map((n, t) => clueSpans.get(new ClueId(n!, t as Tack))!)
+      .toSetSeq()
+      .flatten() as OrderedSet<Reference>);
 
   const setLetter = (l: string | null) =>
     setLetters &&
@@ -107,6 +147,13 @@ export const Grid = (props: GridProps) => {
     setLetters((ls) =>
       l ? (ls ?? OrderedMap()).set(selected, l) : ls?.delete(selected) ?? null
     );
+  const moveSelected = (t: Trajectory) =>
+    selectedClueSpan &&
+    setSelected((s) => s && nextClueCellTo(selectedClueSpan, s, t));
+  const toggleTack = () =>
+    setTack((t) => (t && tacks?.size === 2 ? turn(t) : t));
+  const selectOrToggleTack = (r: Reference) =>
+    r.equals(selected) ? toggleTack() : setSelected(r);
 
   const toggleCell = (r: Reference) => setLights(togglingLightPair(r));
   const lightsProps = (r: Reference) => ({
@@ -115,13 +162,16 @@ export const Grid = (props: GridProps) => {
     onMouseEnter: () => (toggleOnHover ? toggleCell(r) : {}),
   });
   const clueProps = (r: Reference, light: boolean) => ({
-    onClick: () => light && setSelected(r),
+    onClick: () => light && selectOrToggleTack(r),
   });
 
   const onKeyDown = ({ key, ...rest }: KeyboardEvent) => {
     const { altKey, ctrlKey, metaKey, shiftKey } = rest;
     if (altKey || ctrlKey || metaKey) return {};
-    if (key.match(/^[A-Za-z]$/g)) return setLetter(key);
+    if (key.match(/^[A-Za-z]$/g)) {
+      setLetter(key);
+      return moveSelected(tack === "A" ? "Right" : "Down");
+    }
     if (shiftKey) return {};
     const arrow = key.match(/^Arrow(Left|Right|Down|Up)$/);
     if (arrow && selected)
@@ -129,8 +179,19 @@ export const Grid = (props: GridProps) => {
         nextValidCellTo(grid, selected, arrow[1] as Trajectory)
       );
     switch (key) {
+      case "Enter":
+        toggleTack();
+        break;
+      case "Delete":
+        setLetter(null);
+        break;
+      case " ":
+        setLetter(null);
+        moveSelected(tack === "A" ? "Right" : "Down");
+        break;
       case "Backspace":
         setLetter(null);
+        moveSelected(tack === "A" ? "Left" : "Up");
         break;
       case "Home":
         setSelected(grid.first(null)?.r ?? null);
@@ -158,6 +219,7 @@ export const Grid = (props: GridProps) => {
         <Cell
           key={`${r.x},${r.y}`}
           selected={r.equals(selected)}
+          inSelectedClue={selectedClueSpan?.has(r) ?? false}
           letter={letters ? letters.get(r) : undefined}
           {...{ toggleOnHover }}
           {...pick(cellProps, ["r", "light", "clueNumber"])}

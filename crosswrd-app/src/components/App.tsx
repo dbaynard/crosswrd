@@ -8,9 +8,12 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 import "./App.css";
 
+import { ClueSpans } from "../common/ClueSpans";
 import { ClueStarts } from "../common/ClueStarts";
 import { Lights } from "../common/Lights";
 import { Letters } from "../common/Letter";
+import { Transits } from "../common/Transits";
+
 import { EditClues } from "./EditClues";
 import { EditLights } from "./EditLights";
 import { StateSetter } from "./Helpers";
@@ -35,9 +38,9 @@ const useRouterLocation = (): [string, StateSetter<string>] => {
     if (history.location.pathname !== key) history.push(key);
   }, [history, key]);
 
-  useEffect(() => history.listen((location) => setKey(location.pathname)), [
-    history,
-  ]);
+  useEffect(() => {
+    history.listen((location) => setKey(location.pathname));
+  }, [history]);
 
   return [key, setKey];
 };
@@ -54,18 +57,24 @@ const Tabbed = ({ name }: HomeProps) => {
     return displayGrid(size, lights, clueStarts);
   }, [size, lights, clueStarts]);
 
+  const [transits, setTransits] = useState<Transits | null>(null);
+  const [clueSpans, setClueSpans] = useState<ClueSpans | null>(null);
+
+  const commonProps = { size, lights, setLights, grid, letters };
+  const lightsProps = { setClueStarts };
+  const cluesProps = { setLetters, clueStarts };
+  const transitProps = { transits, setTransits, clueSpans, setClueSpans };
+
   return (
     <Tabs activeKey={key} onSelect={(k) => setKey(k ?? "/")}>
       <Tab eventKey="/" title="Home">
         <Home {...{ name }} />
       </Tab>
       <Tab eventKey="/lights" title="Edit Lights">
-        <EditLights
-          {...{ size, lights, setLights, grid, setClueStarts, letters }}
-        />
+        <EditLights {...commonProps} {...lightsProps} />
       </Tab>
       <Tab eventKey="/clues" title="Edit Clues">
-        <EditClues {...{ size, grid, setLights, letters, setLetters }} />
+        <EditClues {...{ ...commonProps, ...cluesProps, ...transitProps }} />
       </Tab>
     </Tabs>
   );

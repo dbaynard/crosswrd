@@ -31,3 +31,6 @@ export const cellTo = (
       return Reference({ x, y: y - i });
   }
 };
+
+export const inGrid = (size: bigint) => (_: unknown, r: Reference): boolean =>
+  [r.x, r.y].every((z) => Math.abs(Number(z)) <= size / 2n);

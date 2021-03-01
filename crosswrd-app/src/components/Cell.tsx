@@ -6,6 +6,7 @@ import { Letter } from "../common/Letter";
 export type CellProps = RawCellProps & {
   r: Reference;
   selected?: boolean;
+  inSelectedClue?: boolean;
   letter?: Letter;
   clueNumber?: bigint;
 };
@@ -43,11 +44,18 @@ const RawCell = styled.div<RawCellProps>`
   line-height: 160%;
 `;
 
+const highlight = (selected?: boolean, inSelectedClue?: boolean) =>
+  selected
+    ? { backgroundColor: "lightskyblue" }
+    : inSelectedClue
+    ? { backgroundColor: "moccasin" }
+    : {};
+
 export const Cell = (props: CellProps) => (
   <RawCell
     id={`${props.r.x},${props.r.y}`}
     data-clue-number={props.clueNumber}
-    style={props.selected ? { backgroundColor: "lightskyblue" } : {}}
+    style={highlight(props.selected, props.inSelectedClue)}
     {...props}
   >
     {props.letter ?? ""}
