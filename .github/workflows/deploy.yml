@@ -42,6 +42,10 @@ jobs:
               args: [--frozen-lockfile]
 
       - name: Build 🔧
+        env:
+          REACT_APP_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          REACT_APP_DEPLOY_SHA: ${{ env.GITHUB_SHA }}
+          REACT_APP_CONTEXT: production
         run: |
           pnpm -C crosswrd-app run build
 
