@@ -1,9 +1,17 @@
 import { StrictMode } from "react";
 import { render } from "react-dom";
+import { init as Sentry } from "@sentry/react";
+
 import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import App from "./components/App";
 import reportWebVitals from "./reportWebVitals";
+
+Sentry({
+  dsn: process.env.REACT_APP_SENTRY_DSN,
+  release: `crosswrd@${process.env.REACT_APP_DEPLOY_SHA}`,
+  environment: process.env.REACT_APP_CONTEXT,
+});
 
 render(
   <StrictMode>
