@@ -7,8 +7,8 @@ export const Reference = Record<{ x: bigint; y: bigint }>(
 const centre = Reference();
 export type Reference = typeof centre;
 
-export const rotate180 = (r: Reference): Reference =>
-  Reference({ x: -r.x, y: -r.y });
+export const rotate180 = ({ x, y }: Reference): Reference =>
+  Reference({ x: -x, y: -y });
 
 export const matchingRefs = (r: Reference): Set<Reference> =>
   Set([r, rotate180(r)]);
