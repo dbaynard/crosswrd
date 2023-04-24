@@ -6,21 +6,21 @@ jobs:
     environment: netlify
     strategy:
       matrix:
-        node-version: [15]
+        node-version: [16]
     steps:
       - name: Checkout 🛎️
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           persist-credentials: false
 
       - name: Setup Node.js ${{ matrix.node-version }}.x
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           check-latest: true
 
       - name: Cache ~/.pnpm-store
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-pnpm-store
         with:
@@ -31,9 +31,9 @@ jobs:
             ${{ runner.os }}-${{ matrix.node-version }}-build-
             ${{ runner.os }}-
 
-      - uses: pnpm/action-setup@8e1abe543ff1fa17b5d36e08ed01b4a1e4c31eb4
+      - uses: pnpm/action-setup@11dd14d0c0916e1ad9ff1938d8d4ea509bebfe10
         with:
-          version: 5.17
+          version: 8.1.1
           run_install: |
             - recursive: true
               args: [--frozen-lockfile]
@@ -63,7 +63,7 @@ jobs:
           HEAD_REF: ${{ github.head_ref }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
 
-      - uses: actions/github-script@v3
+      - uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -75,7 +75,7 @@ jobs:
             })
 
       - name: Upload build artifact 🕵
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: build
           path: crosswrd-app/build

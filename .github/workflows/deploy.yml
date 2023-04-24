@@ -2,28 +2,28 @@ name: Build and Deploy
 on:
   push:
     branches:
-    - main
+      - main
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     environment: netlify
     strategy:
       matrix:
-        node-version: [15]
+        node-version: [16]
     steps:
       - name: Checkout 🛎️
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           persist-credentials: false
 
       - name: Setup Node.js ${{ matrix.node-version }}.x
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           check-latest: true
 
       - name: Cache ~/.pnpm-store
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           cache-name: cache-pnpm-store
         with:
@@ -34,9 +34,9 @@ jobs:
             ${{ runner.os }}-${{ matrix.node-version }}-build-
             ${{ runner.os }}-
 
-      - uses: pnpm/action-setup@8e1abe543ff1fa17b5d36e08ed01b4a1e4c31eb4
+      - uses: pnpm/action-setup@11dd14d0c0916e1ad9ff1938d8d4ea509bebfe10
         with:
-          version: 5.17
+          version: 8.1.1
           run_install: |
             - recursive: true
               args: [--frozen-lockfile]
@@ -61,7 +61,7 @@ jobs:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
 
       - name: Create a Sentry release
-        uses: getsentry/action-release@v1
+        uses: getsentry/action-release@v2
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
